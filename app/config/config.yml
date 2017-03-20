@@ -6,7 +6,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: ro
 
 framework:
     #esi:             ~
@@ -33,6 +33,14 @@ framework:
     assets: ~
     php_errors:
         log: true
+    translator: { fallbacks: [en] }
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    globals:
+        admin_skin: skin-blue
+
 
 # Twig Configuration
 twig:
