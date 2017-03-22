@@ -18,6 +18,7 @@ class UserType extends AbstractType
         $builder->add('username', TextType::class, ['label' => false]);
         $builder->add('password', PasswordType::class, ['label' => false]);
         $builder->add('login', SubmitType::class);
+        $builder->add('new_account', SubmitType::class);
         $builder->add('remember_me', CheckboxType::class, [
             'mapped' => false,
             'required' => false,
