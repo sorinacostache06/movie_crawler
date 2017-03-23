@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\AccountType;
 use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\UserType;
@@ -33,5 +34,30 @@ class SecurityController extends Controller
         $form->handleRequest($request);
 
         return $this->render(':Admin:login.html.twig', ['form' => $form->createView()]);
+    }
+
+    public function createAccountAction(Request $request)
+    {
+        $user = new User();
+        $form = $this->createForm(AccountType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (strcmp($form->get('password')->getData(),$form->get('password_again')->getData()) == 0) {
+                $date = new \DateTime("now", new DateTimeZone('UTC'));
+                $user->setJoinDate($date);
+                $user->setEnabled(true);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+                return $this->redirectToRoute('home');
+            }
+            else {
+                $this->addFlash('error','Form-ul este invalid');
+            }
+        }
+
+        return $this->render(':Admin:create_account.html.twig', ['form' => $form->createView()]);
     }
 }

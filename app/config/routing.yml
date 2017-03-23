@@ -13,3 +13,7 @@ home:
     path : /home
     defaults : { _controller: AppBundle:Home:success}
 
+create_account:
+    path : /create_account
+    defaults : { _controller: AppBundle:Security:createAccount}
+
