@@ -17,3 +17,8 @@ create_account:
     path : /create_account
     defaults : { _controller: AppBundle:Security:createAccount}
 
+default:
+    path : /
+    defaults : { _controller: AppBundle:Home:success}
+
+

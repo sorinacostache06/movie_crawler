@@ -1,0 +1,20 @@
+{% extends 'AvanzuAdminThemeBundle:layout:base-layout.html.twig' %}
+
+{% block title %}
+    Wifi Admin
+{% endblock %}
+{% block flashBag %}
+    {% include '::flashBag.html.twig' %}
+{% endblock %}
+{% block avanzu_sidebar %}
+    <ul class="sidebar-menu">
+        <li class="header">{{ 'sidebar.navigation.main_navigation'|trans }}</li>
+        <li><a href="{{ path('home') }}"><i class="fa fa-pencil"></i>{{ 'sidebar.navigation.home'|trans }}</a></li>
+        {#<li><a href="{{ path('login') }}"><i class="fa fa-pencil"></i>{{ 'sidebar.navigation.login'|trans }}</a></li>#}
+        <li><a href="{{ path('logout') }}"><i class="fa fa-cog"></i>{{ 'sidebar.logout'|trans }}</a></li>
+        <li><a href=""><i class="fa fa-language"></i>{{ 'sidebar.navigation.language'|trans }}</a>
+            <li><a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'ro'})) }}">Romana</a></li>
+            <li><a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'en'})) }}">English</a></li>
+        </li>
+    </ul>
+{% endblock %}
