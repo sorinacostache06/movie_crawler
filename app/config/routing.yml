@@ -21,4 +21,6 @@ default:
     path : /
     defaults : { _controller: AppBundle:Home:success}
 
-
+crowler:
+    path : /crowler
+    defaults : { _controller: AppBundle:Home:crow}
