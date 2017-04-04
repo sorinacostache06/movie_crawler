@@ -10,9 +10,14 @@ use Goutte\Client;
 use AppBundle\Entity\Test;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 
 class HomeController extends Controller
 {
+    public $arrayLinks = [];
+
+    public $countLinks = 0;
+
     public function successAction(Request $request)
     {
         return $this->render(':Admin:success.html.twig',[]);
@@ -20,68 +25,58 @@ class HomeController extends Controller
 
     public function crowAction(Request $request)
     {
-//        $html = <<<'HTML'
-//<!DOCTYPE html>
-//<html>
-//    <body>
-//        <p class="message">Hello World!</p>
-//        <p>Hello Crawler!</p>
-//    </body>
-//</html>
-//HTML;
-//
-//        $crawler = new Crawler($html);
-//
-//        foreach ($crawler as $domElement) {
-//            var_dump($domElement->nodeValue);
+        $this->getAllDistinctLinks('http://www.cinemagia.ro/');
+//        for ($i=0; $i<$this->countLinks; $i++) {
+//            echo $this->arrayLinks[$i] . "<br/>";
 //        }
-//        $client = new Client();
-//        $crawler = new Crawler();
-//        $crawler = $client->request('GET', 'http://www.cinemagia.ro/');
-//
-//        $links = $crawler->filter('a')->links();
-////        foreach ($links as $link) {
-////           echo $l = $link->getUri()."<br/>";
-////        }
-//        foreach ($links as $link) {
-//            $l = $link->getUri()."<br/>";
-//            $url = parse_url($l);
-//            $host = (isset($url['host'])) ? $url['host'] : '';
-//            if (strcmp($host,"www.cinemagia.ro") == 0) {
-//                $path = explode('/',$url["path"]);
-//                if (count($path) == 5 and strcmp($path[1],"filme") == 0 and strlen($path[3]) == 3 ) {
-//                    $name = explode('-',$path[2]);
-//                    if (is_numeric($name[count($name) -1])){
-//                        echo $l;
-////                        $titles_crowler = $crawler->filter('h1 > a');
-////                        $year = $crawler->filter('a[class="link1"]')->text();
-////                        foreach ($titles_crowler as $t) {
-////                            $title = $t->nodeValue;
-////                        }
-////
-////                        echo $l . " " . $year . " " . $title . "<br/>";
-//                    }
-//                }
-//            }
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Test');
+        $qb = $em->createQueryBuilder();
+        $access_repo = $repo->selectAll($qb);
+        $result = $access_repo->getQuery()->getResult();
 
-
-//            $vec = explode("/",$l);
-////            var_dump($vec);
-////            for ($i=0; $i<count($vec); $i++) {
-////                echo $i . $vec[$i] . "<br/>";
-////            }
-//            if (count($vec) == 7 and strcmp($vec[2],"www.cinemagia.ro") == 0 and strcmp($vec[3],"filme") == 0 and strcmp($vec[5],"#>") == 0) {
-//                print_r ($l);
-//            }
-////            echo $link->nodeValue;
-//        }
-        $this->recAction('http://www.cinemagia.ro/');
-
+//        var_dump($result[100]->getLink());
+          // pt fiecare link din test fac getAllDistinctLinks
         return new Response('Welcome!');
     }
 
-    public function recAction($request_url)
+    public function getAllDistinctLinks($siteUrl)
     {
+        $client = new Client();
+        $crawler = new Crawler();
+        $crawler = $client->request('GET', $siteUrl);
+
+        $links = $crawler->filter('a')->links();
+        foreach ($links as $link) {
+            $l = $link->getUri();
+            $em = $this->getDoctrine()->getManager();
+            $repo = $em->getRepository('AppBundle:Test');
+            $qb = $em->createQueryBuilder();
+            $access_repo = $repo->distinctLink($qb, $l);
+            $result = $access_repo->getQuery()->getResult();
+            if ($result == NULL) {
+                $this->arrayLinks[$this->countLinks++] = $l;
+                $test = new Test();
+                $test->setLink($l);
+                $em->persist($test);
+                $em->flush();
+            }
+        }
+
+    }
+
+
+    public function getMovieFromLinks($request_url)
+    {
+        //get year and get name
+//        $titles_crowler = $crawler->filter('h1 > a');
+//                        $year = $crawler->filter('a[class="link1"]')->text();
+//                        foreach ($titles_crowler as $t) {
+//                            $title = $t->nodeValue;
+//                        }
+//
+//                        echo $l . " " . $year . " " . $title . "<br/>";
+
         $client = new Client();
         $crawler = new Crawler();
         $crawler = $client->request('GET', $request_url);
@@ -101,18 +96,14 @@ class HomeController extends Controller
                         $em = $this->getDoctrine()->getManager();
                         $repo = $em->getRepository('AppBundle:Test');
                         $qb = $em->createQueryBuilder();
-                        $result = $repo->distinctLink($qb,$l);
-                        print_r($result);
-                        die();
-                        try {
+                        $access_repo = $repo->distinctLink($qb, $l);
+                        $result = $access_repo->getQuery()->getResult();
+                        if ($result == NULL) {
                             $test = new Test();
                             $test->setLink($l);
                             $em->persist($test);
                             $em->flush();
-                        } catch(ORMException $e){
-                            echo "Sorry, but someone else has already changed this entity. Please apply the changes again!";
                         }
-                        $this->recAction($l);
                     }
                 }
             }

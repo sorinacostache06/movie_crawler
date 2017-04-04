@@ -18,4 +18,12 @@ class TestRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('link',$link);
         return $qb;
     }
+
+    public function selectAll($qb)
+    {
+        $qb->select('u')
+            ->from('AppBundle:Test','u');
+        return $qb;
+    }
+
 }
