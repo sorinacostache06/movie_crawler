@@ -3,12 +3,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Movie
  *
  * @ORM\Table(name="movie")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MovieRepository")
+ * @UniqueEntity("link")
  */
 class Movie
 {
