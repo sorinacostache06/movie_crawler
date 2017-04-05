@@ -14,10 +14,6 @@ use Doctrine\ORM\QueryBuilder;
 
 class HomeController extends Controller
 {
-    public $arrayLinks = [];
-
-    public $countLinks = 0;
-
     public function successAction(Request $request)
     {
         return $this->render(':Admin:success.html.twig',[]);
@@ -102,8 +98,11 @@ class HomeController extends Controller
                 $path = explode('/',$path_url);
                 if (count($path) == 4 and strcmp($path[1],"filme") == 0 and strcmp($path[3],"") == 0) {
                     $name = explode('-',$path[2]);
-                    if (is_numeric($name[count($name) -1])){
-                        echo $l . '    ' . count($path) . "<br/>";
+                    if (is_numeric($name[count($name) -1]) and strcmp($name[0],"") != 0){
+                        $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
+                        if (strcmp($fragment,"") == 0) {
+                            echo $l . '  '. $fragment . "<br/>";
+                        }
 //                        $em = $this->getDoctrine()->getManager();
 //                        $repo = $em->getRepository('AppBundle:Test');
 //                        $qb = $em->createQueryBuilder();
