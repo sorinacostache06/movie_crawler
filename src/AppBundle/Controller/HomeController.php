@@ -41,7 +41,6 @@ class HomeController extends Controller
         $access_repo = $repo->selectAll($qb);
         $results = $access_repo->getQuery()->getResult();
 
-        set_time_limit (300);
         foreach ($results as $result) {
             $url = $result->getLink();
             $this->getAllDistinctLinks($url);
