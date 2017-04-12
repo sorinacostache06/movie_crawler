@@ -11,6 +11,7 @@ use AppBundle\Entity\Test;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
+use AppBundle\Entity\Movie;
 
 class HomeController extends Controller
 {
@@ -31,51 +32,6 @@ class HomeController extends Controller
 
         return new Response('Welcome!');
     }
-
-    public function startCrawlerAction()
-    {
-        $this->getAllDistinctLinks('http://www.cinemagia.ro/');
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:Test');
-        $qb = $em->createQueryBuilder();
-        $access_repo = $repo->selectAll($qb);
-        $results = $access_repo->getQuery()->getResult();
-
-        foreach ($results as $result) {
-            $url = $result->getLink();
-            $this->getAllDistinctLinks($url);
-        }
-    }
-
-    public function getAllDistinctLinks($siteUrl)
-    {
-
-        $client = new Client();
-        $crawler = new Crawler();
-        $crawler = $client->request('GET', $siteUrl);
-
-        $links = $crawler->filter('a')->links();
-        foreach ($links as $link) {
-            $l = $link->getUri();
-            $url = parse_url($l);
-            $host = (isset($url['host'])) ? $url['host'] : '';
-            if (strcmp($host,"www.cinemagia.ro") == 0) {
-                $em = $this->getDoctrine()->getManager();
-                $repo = $em->getRepository('AppBundle:Test');
-                $qb = $em->createQueryBuilder();
-                $access_repo = $repo->distinctLink($qb, $l);
-                $result = $access_repo->getQuery()->getResult();
-                if ($result == NULL) {
-                    $this->arrayLinks[$this->countLinks++] = $l;
-                    $test = new Test();
-                    $test->setLink($l);
-                    $em->persist($test);
-                    $em->flush();
-                }
-            }
-        }
-    }
-
 
     public function getMovieFromLinks($links)
     {
@@ -100,22 +56,24 @@ class HomeController extends Controller
                     if (is_numeric($name[count($name) -1]) and strcmp($name[0],"") != 0){
                         $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
                         if (strcmp($fragment,"") == 0) {
-                            echo $l . '  '. $fragment . "<br/>";
+                            $movie = new Movie();
+                            $client = new Client();
+                            $crawler = new Crawler();
+                            $crawler = $client->request('GET', 'http://www.cinemagia.ro/filme/la-fille-inconnue-622701/');
+                            $rate = $crawler->filter('div>div[class="left"]')->text();
+                            if (strcmp($rate,"- -") == 0){
+                                echo 0;
+//                                $movie->setRating(0);
+                            } else {
+                                   $rates = explode('/',$rate);
+                                // $movie->setRating($rates[0]);
+                                echo $rates[0]; die();
+                            }
+                    }
+//                            echo $l . '  '. $rate . "<br/>";
                         }
-//                        $em = $this->getDoctrine()->getManager();
-//                        $repo = $em->getRepository('AppBundle:Test');
-//                        $qb = $em->createQueryBuilder();
-//                        $access_repo = $repo->distinctLink($qb, $l);
-//                        $result = $access_repo->getQuery()->getResult();
-//                        if ($result == NULL) {
-//                            $test = new Test();
-//                            $test->setLink($l);
-//                            $em->persist($test);
-//                            $em->flush();
-//                        }
                     }
                 }
             }
         }
     }
-}
