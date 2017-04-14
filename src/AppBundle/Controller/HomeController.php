@@ -62,15 +62,26 @@ class HomeController extends Controller
                             $crawler = $client->request('GET', 'http://www.cinemagia.ro/filme/la-fille-inconnue-622701/');
                             $rate = $crawler->filter('div>div[class="left"]')->text();
                             if (strcmp($rate,"- -") == 0){
-                                echo 0;
+                                  $rate = 0;
 //                                $movie->setRating(0);
                             } else {
                                    $rates = explode('/',$rate);
                                 // $movie->setRating($rates[0]);
-                                echo $rates[0]; die();
+                                    $rate = $rates[0];
                             }
-                    }
-//                            echo $l . '  '. $rate . "<br/>";
+                            $titles_crowler = $crawler->filter('h1 > a');
+                            $year = $crawler->filter('a[class="link1"]')->text();
+                            foreach ($titles_crowler as $t) {
+                                $title = $t->nodeValue;
+                        }
+//                            $movie->setYear($year);
+//                            $movie->setTitle($title);
+//                            $movie->setLink($l);
+                            $d = $crawler->filter('ul[class="list1"]')->children()->each(function (Crawler $node, $i) {
+                                return $node;});
+//                            $movie->setDirectors($d[0]);
+//                            $movie->setActors($d[1]);
+                        }
                         }
                     }
                 }
