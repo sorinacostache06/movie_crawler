@@ -39,40 +39,46 @@ class Movie
     private $link;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="year", type="date")
+     * @ORM\Column(name="year", type="string", nullable=true)
      */
     private $year;
 
     /**
      * @var array
      *
-     * @ORM\Column(name="actors", type="array")
+     * @ORM\Column(name="actors", type="array", nullable=true)
      */
     private $actors;
 
     /**
      * @var array
      *
-     * @ORM\Column(name="directors", type="array")
+     * @ORM\Column(name="directors", type="array", nullable=true)
      */
     private $directors;
 
     /**
      * @var array
      *
-     * @ORM\Column(name="genre", type="array")
+     * @ORM\Column(name="genre", type="array", nullable=true)
      */
     private $genre;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(name="rating", type="integer")
+     * @ORM\Column(name="rating", type="float")
      */
     private $rating;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="rating_imdb", type="float")
+     */
+    private $ratingImdb;
 
     /**
      * @ORM\ManyToOne(targetEntity="Site", inversedBy="movies")
@@ -141,7 +147,7 @@ class Movie
     /**
      * Set year
      *
-     * @param \DateTime $year
+     * @param string $year
      *
      * @return Movie
      */
@@ -155,7 +161,7 @@ class Movie
     /**
      * Get year
      *
-     * @return \DateTime
+     * @return string
      */
     public function getYear()
     {
@@ -237,7 +243,7 @@ class Movie
     /**
      * Set rating
      *
-     * @param integer $rating
+     * @param float $rating
      *
      * @return Movie
      */
@@ -251,11 +257,35 @@ class Movie
     /**
      * Get rating
      *
-     * @return int
+     * @return float
      */
     public function getRating()
     {
         return $this->rating;
+    }
+
+    /**
+     * Set rating_imdb
+     *
+     * @param float $rating_imdb
+     *
+     * @return Movie
+     */
+    public function setRatingImdb($ratingImdb)
+    {
+        $this->ratingImdb = $ratingImdb;
+
+        return $this;
+    }
+
+    /**
+     * Get rating_imdb
+     *
+     * @return float
+     */
+    public function getRatingImdb()
+    {
+        return $this->ratingImdb;
     }
 
     /**

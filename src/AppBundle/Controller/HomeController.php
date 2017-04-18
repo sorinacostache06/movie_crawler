@@ -17,6 +17,10 @@ class HomeController extends Controller
 {
     public function successAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $movie = new Movie();
+        $repo = $em->getRepository('AppBundle:Movie');
+        $movie = $repo->find(315);
         return $this->render(':Admin:success.html.twig',[]);
     }
 
@@ -35,15 +39,6 @@ class HomeController extends Controller
 
     public function getMovieFromLinks($links)
     {
-        //get year and get name
-//        $titles_crowler = $crawler->filter('h1 > a');
-//                        $year = $crawler->filter('a[class="link1"]')->text();
-//                        foreach ($titles_crowler as $t) {
-//                            $title = $t->nodeValue;
-//                        }
-//
-//                        echo $l . " " . $year . " " . $title . "<br/>";
-
         foreach ($links as $link) {
             $l = $link->getLink();
             $url = parse_url($l);
@@ -59,28 +54,88 @@ class HomeController extends Controller
                             $movie = new Movie();
                             $client = new Client();
                             $crawler = new Crawler();
-                            $crawler = $client->request('GET', 'http://www.cinemagia.ro/filme/la-fille-inconnue-622701/');
+                            $crawler = $client->request('GET', $l);
                             $rate = $crawler->filter('div>div[class="left"]')->text();
+
                             if (strcmp($rate,"- -") == 0){
-                                  $rate = 0;
-//                                $movie->setRating(0);
+                                $movie->setRating(0);
                             } else {
                                    $rates = explode('/',$rate);
-                                // $movie->setRating($rates[0]);
-                                    $rate = $rates[0];
+                                 $movie->setRating($rates[0]);
                             }
+
+                            $rateImdb = ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->count())?
+                                ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->text()):0;
+                            $rateImdb = (float)str_replace("IMDB: ", '', $rateImdb);
+                            $movie->setRatingImdb($rateImdb);
+
                             $titles_crowler = $crawler->filter('h1 > a');
-                            $year = $crawler->filter('a[class="link1"]')->text();
                             foreach ($titles_crowler as $t) {
                                 $title = $t->nodeValue;
-                        }
-//                            $movie->setYear($year);
-//                            $movie->setTitle($title);
-//                            $movie->setLink($l);
+                            }
+
+                            $year = ($crawler->filter('a[class="link1"]')->count())
+                                ?($crawler->filter('a[class="link1"]')->text()):' ';
+                            $year = str_replace('(', '', $year);
+                            $year = str_replace(')', '', $year);
+
                             $d = $crawler->filter('ul[class="list1"]')->children()->each(function (Crawler $node, $i) {
-                                return $node;});
-//                            $movie->setDirectors($d[0]);
-//                            $movie->setActors($d[1]);
+                                return $node->text();});
+
+                            if (count($d) == 0) {
+                                $actors = null;
+                                $directors = null;
+                            } elseif (count($d) == 1) {
+                                $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                if (strpos($directorsWithoutSpaces, "Regia") !== false) {
+                                    $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
+                                    $directors = explode(',',$directorsWithoutRegie);
+                                } else {
+                                    $directors = null;
+                                }
+
+                                $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                if (strpos($actorsWithoutSpaces, "Cu") !== false) {
+                                    $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
+                                    $actors = explode(',',$actorsWithoutCu);
+                                } else {
+                                    $actors = null;
+                                }
+                            } else {
+                                $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                if (strpos($directorsWithoutSpaces, "Regia") !== false) {
+                                    $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
+                                    $directors = explode(',',$directorsWithoutRegie);
+                                } else {
+                                    $directors = null;
+                                }
+
+                                $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[1]);
+                                if (strpos($actorsWithoutSpaces, "Cu") !== false) {
+                                    $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
+                                    $actors = explode(',',$actorsWithoutCu);
+                                } else {
+                                    $actors = null;
+                                }
+                            }
+
+
+                            $gen = ($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->count())
+                                ?($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->text()):' ';
+
+                            $genWithoutSpaces = preg_replace('/\s+/', ',', $gen);
+                            $genres = explode(',',$genWithoutSpaces);
+                            $genres = array_filter($genres);
+
+                            $movie->setYear($year);
+                            $movie->setTitle($title);
+                            $movie->setLink($l);
+                            $movie->setActors($actors);
+                            $movie->setDirectors($directors);
+                            $movie->setGenre($genres);
+                            $em = $this->getDoctrine()->getManager();
+                            $em->persist($movie);
+                            $em->flush();
                         }
                         }
                     }
