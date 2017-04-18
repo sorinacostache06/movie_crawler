@@ -15,13 +15,24 @@ use AppBundle\Entity\Movie;
 
 class HomeController extends Controller
 {
-    public function successAction(Request $request)
+    public function listMoviesAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $movie = new Movie();
         $repo = $em->getRepository('AppBundle:Movie');
-        $movie = $repo->find(315);
-        return $this->render(':Admin:success.html.twig',[]);
+        $qb = $em->createQueryBuilder();
+        $movies = $repo->selectAll($qb);
+        $movieManageList = $movies->getQuery()->getResult();
+
+        if (empty($movieManageList)) {
+            $this->addFlash('notice', $this->get('translator')->trans('movie_list_empty'));
+        }
+
+        return $this->render(
+            '::movie_list.html.twig',
+            [
+                'movieManageList' => $movieManageList,
+            ]
+        );
     }
 }
 

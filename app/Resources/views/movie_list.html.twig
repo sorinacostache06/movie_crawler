@@ -1,0 +1,48 @@
+{% extends '::base-layout.html.twig' %}
+
+{% block page_title %}{{ 'navigation.management_movie.title'|trans }}{% endblock %}
+{% block page_content %}
+    {% block flashBag %}
+        {{ parent() }}
+    {% endblock %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">{{ 'voucher_request.table.title'|trans }}</h3>
+        </div>
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{{ 'management_list.table.id'|trans }}</th>
+                    <th>{{ 'management_voucher.table.voucher'|trans }}</th>
+                    <th>{{ 'management_voucher.table.creator'|trans }}</th>
+                    <th>{{ 'management_voucher.table.start_date'|trans }}</th>
+                    {#<th>{{ 'management_voucher.table.end_date'|trans }}</th>#}
+                    {#<th>{{ 'management_voucher.table.used_granted'|trans }}</th>#}
+                    {#<th>{{ 'management_voucher.table.notes'|trans }}</th>#}
+                </tr>
+                </thead>
+                {% for movie in movieManageList %}
+                    <tr>
+                        <td>{{ movie.title }}</td>
+                        <td>{{ movie.year }}</td>
+                        {#<td>{{ movie.actors }}</td>#}
+                        {#<td>{{ movie.directors }}</td>#}
+                        {#<td>{{ movie.genre }}</td>#}
+                        <td>{{ movie.rating }} </td>
+                        <td>{{ movie.ratingImdb }} </td>
+                        <td>
+                        {#<span style="float: left">#}
+                            {#<a class="btn btn-block btn-success {% if voucher.status == 'active' %}disabled{% endif %}"#}
+                               {#href="{{ path('voucher_management_activate', {'voucher_id': voucher.id }) }}">#}
+                                {#{{ 'management_voucher.button_activate'|trans }}#}
+                                {#<i class="fa fa-check"></i>#}
+                            {#</a>#}
+                        {#</span>#}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

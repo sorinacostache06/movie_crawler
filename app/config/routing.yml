@@ -11,7 +11,7 @@ logout:
 
 home:
     path : /home
-    defaults : { _controller: AppBundle:Home:success}
+    defaults : { _controller: AppBundle:Home:listMovies}
 
 create_account:
     path : /create_account

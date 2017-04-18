@@ -14,4 +14,10 @@ namespace AppBundle\Repository;
  */
 class MovieRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function selectAll($qb)
+    {
+        $qb->select('u')
+            ->from('AppBundle:Movie','u');
+        return $qb;
+    }
 }
