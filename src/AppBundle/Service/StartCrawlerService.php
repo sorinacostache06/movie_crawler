@@ -1,11 +1,15 @@
 <?php
+/**
+ * Created by Sorina Costache.
+ * User: sorina
+ * Date: 18.04.2017*/
 
 namespace AppBundle\Service;
 
 use Doctrine\ORM\EntityManager;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
-use AppBundle\Entity\Test;
+use AppBundle\Entity\Link;
 
 class StartCrawlerService
 {
@@ -16,10 +20,13 @@ class StartCrawlerService
         $this->em = $em;
     }
 
+    /**
+     * Get all links from a site
+     */
     public function startCrawlerAction()
     {
         $this->getAllDistinctLinks('http://www.cinemagia.ro/');
-        $repo = $this->em->getRepository('AppBundle:Test');
+        $repo = $this->em->getRepository('AppBundle:Link');
         $qb = $this->em->createQueryBuilder();
         $access_repo = $repo->selectAll($qb);
         $results = $access_repo->getQuery()->getResult();
@@ -30,6 +37,10 @@ class StartCrawlerService
         }
     }
 
+    /**
+     * Insert all the distinct links in database
+     * @param $siteUrl
+     */
     public function getAllDistinctLinks($siteUrl)
     {
 
@@ -43,14 +54,14 @@ class StartCrawlerService
             $url = parse_url($l);
             $host = (isset($url['host'])) ? $url['host'] : '';
             if (strcmp($host,"www.cinemagia.ro") == 0) {
-                $repo = $this->em->getRepository('AppBundle:Test');
+                $repo = $this->em->getRepository('AppBundle:Link');
                 $qb = $this->em->createQueryBuilder();
                 $access_repo = $repo->distinctLink($qb, $l);
                 $result = $access_repo->getQuery()->getResult();
                 if ($result == NULL) {
-                    $test = new Test();
-                    $test->setLink($l);
-                    $this->em->persist($test);
+                    $link = new Link();
+                    $link->setLink($l);
+                    $this->em->persist($link);
                     $this->em->flush();
                 }
             }

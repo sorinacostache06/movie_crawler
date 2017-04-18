@@ -7,3 +7,7 @@ services:
     start_crawler:
         class: AppBundle\Service\StartCrawlerService
         arguments : ["@doctrine.orm.entity_manager"]
+
+    insert_movies:
+        class: AppBundle\Service\GetMoviesService
+        arguments : ["@doctrine.orm.entity_manager"]

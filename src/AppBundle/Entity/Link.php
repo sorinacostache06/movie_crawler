@@ -1,16 +1,20 @@
 <?php
+/**
+ * Created by Sorina Costache.
+ * User: sorina
+ * Date: 18.04.2017*/
 
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Test
+ * Link
  *
- * @ORM\Table(name="test")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\TestRepository")
+ * @ORM\Table(name="link")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\LinkRepository")
  */
-class Test
+class Link
 {
     /**
      * @var int
@@ -44,7 +48,7 @@ class Test
      *
      * @param string $link
      *
-     * @return Test
+     * @return Link
      */
     public function setLink($link)
     {

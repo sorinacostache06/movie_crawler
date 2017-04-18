@@ -1,4 +1,8 @@
 <?php
+/**
+ * Created by Sorina Costache.
+ * User: sorina
+ * Date: 18.04.2017*/
 
 namespace AppBundle\Controller;
 
@@ -8,27 +12,21 @@ use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\UserType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class SecurityController extends Controller
 {
     protected $user;
 
     /**
-     * render form
-     *
+     * Login function
      * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function loginAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirectToRoute('home');
         }
-//        // get the login error if there is one
-//        $authenticationUtils = $this->get('security.authentication_utils');
-//        $error = $authenticationUtils->getLastAuthenticationError();
         $this->user = new User();
         $form = $this->createForm(UserType::class, $this->user);
         $form->handleRequest($request);
@@ -36,11 +34,15 @@ class SecurityController extends Controller
         return $this->render(':Admin:login.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Create new account
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function createAccountAction(Request $request)
     {
         $user = new User();
         $form = $this->createForm(AccountType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
