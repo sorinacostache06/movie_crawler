@@ -19,8 +19,8 @@ create_account:
 
 default:
     path : /
-    defaults : { _controller: AppBundle:Home:success}
+    defaults : { _controller: AppBundle:Home:listMovies}
 
 crowler:
     path : /crowler
-    defaults : { _controller: AppBundle:Home:crow}
+    defaults : { _controller: AppBundle:Home:insertMovies1}

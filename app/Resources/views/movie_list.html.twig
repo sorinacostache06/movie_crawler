@@ -10,39 +10,78 @@
             <h3 class="box-title">{{ 'voucher_request.table.title'|trans }}</h3>
         </div>
         <div class="box-body table-responsive no-padding">
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>{{ 'management_list.table.id'|trans }}</th>
-                    <th>{{ 'management_voucher.table.voucher'|trans }}</th>
-                    <th>{{ 'management_voucher.table.creator'|trans }}</th>
-                    <th>{{ 'management_voucher.table.start_date'|trans }}</th>
-                    {#<th>{{ 'management_voucher.table.end_date'|trans }}</th>#}
-                    {#<th>{{ 'management_voucher.table.used_granted'|trans }}</th>#}
-                    {#<th>{{ 'management_voucher.table.notes'|trans }}</th>#}
-                </tr>
-                </thead>
+            <ul class="table table-bordered">
                 {% for movie in movieManageList %}
-                    <tr>
-                        <td>{{ movie.title }}</td>
-                        <td>{{ movie.year }}</td>
-                        {#<td>{{ movie.actors }}</td>#}
-                        {#<td>{{ movie.directors }}</td>#}
-                        {#<td>{{ movie.genre }}</td>#}
-                        <td>{{ movie.rating }} </td>
-                        <td>{{ movie.ratingImdb }} </td>
-                        <td>
-                        {#<span style="float: left">#}
-                            {#<a class="btn btn-block btn-success {% if voucher.status == 'active' %}disabled{% endif %}"#}
-                               {#href="{{ path('voucher_management_activate', {'voucher_id': voucher.id }) }}">#}
-                                {#{{ 'management_voucher.button_activate'|trans }}#}
-                                {#<i class="fa fa-check"></i>#}
-                            {#</a>#}
-                        {#</span>#}
-                        </td>
-                    </tr>
+                <li class="info-box">
+                    <div class="box-title">
+                        <h2>{{ movie.title }}  </h2>
+                        <h4>({{ movie.year }})</h4>
+                    </div>
+                    <div style="display: inline-block; width: 100%">
+                        <div style="float: left">
+                            <img src={{ movie.image }}>
+                        </div>
+                        <div style="float: left; width: 40%">
+                            <ul class="info-box-content">
+                                <li class="list-unstyled">
+                                        {% if movie.directors is not null %}
+                                            <span class="text-bold">Regia : </span>
+                                            {% for director in movie.directors %}
+                                                {% if director != movie.directors|last %}
+                                                    {{ director }},
+                                                {% else %}
+                                                    {{ director }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                </li>
+
+                                <li class="list-unstyled">
+                                    {% if movie.actors is not null %}
+                                        <span class="text-bold">Actori : </span>
+                                        {% for actor in movie.actors %}
+                                            {% if actor != movie.actors|last %}
+                                                {{ actor }},
+                                            {% else %}
+                                                {{ actor }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+
+                                <li class="list-unstyled">
+                                    {% if movie.genre is not empty %}
+                                        <span class="text-bold">Gen : </span>
+                                        {% for gen in movie.genre %}
+                                            {% if gen != movie.genre|last %}
+                                                {{ gen }},
+                                            {% else %}
+                                                {{ gen }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                        <div style="float: left; width: 40%">
+                            <div class="caption">
+                                <div class="info-box-content">
+                                    <span class="info-box-icon bg-aqua">
+                                        <i class="fa fa-star-o"></i>
+                                    </span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Nota film</span>
+                                        <span class="info-box-number">{{ (movie.rating+movie.ratingImdb)/2 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <div>
+                    </div>
+                </div>
+                </div>
+                </li>
                 {% endfor %}
-            </table>
+            </ul>
         </div>
     </div>
 {% endblock %}

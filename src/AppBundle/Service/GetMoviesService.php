@@ -52,90 +52,126 @@ class GetMoviesService
                     if (is_numeric($name[count($name) -1]) and strcmp($name[0],"") != 0){
                         $fragment = isset($url['fragment']) ? '#' . $url['fragment'] : '';
                         if (strcmp($fragment,"") == 0) {
-                            $movie = new Movie();
-                            $client = new Client();
-                            $crawler = new Crawler();
-                            $crawler = $client->request('GET', $l);
-                            $rate = $crawler->filter('div>div[class="left"]')->text();
+                            $repo = $this->em->getRepository('AppBundle:Movie');
+                            $qb = $this->em->createQueryBuilder();
+                            $access_repo = $repo->distinctMovie($qb, $l);
+                            $result = $access_repo->getQuery()->getResult();
+                            if ($result == NULL) {
+                                $movie = new Movie();
+                                $client = new Client();
+                                $crawler = new Crawler();
+                                $crawler = $client->request('GET', $l);
+                                $rate = $crawler->filter('div>div[class="left"]')->text();
 
-                            if (strcmp($rate,"- -") == 0){
-                                $movie->setRating(0);
-                            } else {
-                                $rates = explode('/',$rate);
-                                $movie->setRating($rates[0]);
-                            }
-
-                            $rateImdb = ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->count())?
-                                ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->text()):0;
-                            $rateImdb = (float)str_replace("IMDB: ", '', $rateImdb);
-                            $movie->setRatingImdb($rateImdb);
-
-                            $titles_crowler = $crawler->filter('h1 > a');
-                            foreach ($titles_crowler as $t) {
-                                $title = $t->nodeValue;
-                            }
-
-                            $year = ($crawler->filter('a[class="link1"]')->count())
-                                ?($crawler->filter('a[class="link1"]')->text()):' ';
-                            $year = str_replace('(', '', $year);
-                            $year = str_replace(')', '', $year);
-
-                            $d = $crawler->filter('ul[class="list1"]')->children()->each(function (Crawler $node, $i) {
-                                return $node->text();});
-
-                            if (count($d) == 0) {
-                                $actors = null;
-                                $directors = null;
-                            } elseif (count($d) == 1) {
-                                $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
-                                if (strpos($directorsWithoutSpaces, "Regia") !== false) {
-                                    $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
-                                    $directors = explode(',',$directorsWithoutRegie);
+                                if (strcmp($rate, "- -") == 0) {
+                                    $movie->setRating(0);
                                 } else {
-                                    $directors = null;
+                                    $rates = explode('/', $rate);
+                                    $movie->setRating($rates[0]);
                                 }
 
-                                $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
-                                if (strpos($actorsWithoutSpaces, "Cu") !== false) {
-                                    $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
-                                    $actors = explode(',',$actorsWithoutCu);
-                                } else {
+                                $rateImdb = ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->count()) ?
+                                    ($crawler->filter('div[class="imdb-rating mt5 fsize11"]>a')->text()) : 0;
+                                $rateImdb = (float)str_replace("IMDB: ", '', $rateImdb);
+                                $movie->setRatingImdb($rateImdb);
+
+                                $titles_crowler = $crawler->filter('h1 > a');
+                                foreach ($titles_crowler as $t) {
+                                    $title = $t->nodeValue;
+                                }
+
+                                $year = ($crawler->filter('a[class="link1"]')->count())
+                                    ? ($crawler->filter('a[class="link1"]')->text()) : ' ';
+                                $year = str_replace('(', '', $year);
+                                $year = str_replace(')', '', $year);
+
+                                $d = $crawler->filter('ul[class="list1"]')->children()->each(function (Crawler $node, $i) {
+                                    return $node->text();
+                                });
+
+
+                                if (count($d) == 0) {
                                     $actors = null;
-                                }
-                            } else {
-                                $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
-                                if (strpos($directorsWithoutSpaces, "Regia") !== false) {
-                                    $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
-                                    $directors = explode(',',$directorsWithoutRegie);
-                                } else {
                                     $directors = null;
-                                }
+                                } elseif (count($d) == 1) {
+                                    $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                    if (strpos($directorsWithoutSpaces, "Regia") !== false) {
+                                        $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
+                                        $directorsWithoutSpace = explode(',', $directorsWithoutRegie);
+                                        $directors = [];
+                                        $i = 0;
+                                        foreach ($directorsWithoutSpace as $director) {
+                                            $e = preg_split('/(?=[A-Z])/', $director);
+                                            $directors[$i++] = implode(" ", $e);
+                                        }
+                                    } else {
+                                        $directors = null;
+                                    }
 
-                                $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[1]);
-                                if (strpos($actorsWithoutSpaces, "Cu") !== false) {
-                                    $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
-                                    $actors = explode(',',$actorsWithoutCu);
+                                    $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                    if (strpos($actorsWithoutSpaces, "Cu") !== false) {
+                                        $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
+                                        $actorsWithoutSpace = explode(',', $actorsWithoutCu);
+                                        $actors = [];
+                                        $i = 0;
+                                        foreach ($actorsWithoutSpace as $actor) {
+                                            $e = preg_split('/(?=[A-Z])/', $actor);
+                                            $actors[$i++] = implode(" ", $e);
+                                        }
+
+                                    } else {
+                                        $actors = null;
+                                    }
                                 } else {
-                                    $actors = null;
+                                    $directorsWithoutSpaces = preg_replace('/\s+/', '', $d[0]);
+                                    if (strpos($directorsWithoutSpaces, "Regia") !== false) {
+                                        $directorsWithoutRegie = str_replace("Regia", '', $directorsWithoutSpaces);
+                                        $directorsWithoutSpace = explode(',', $directorsWithoutRegie);
+                                        $directors = [];
+                                        $i = 0;
+                                        foreach ($directorsWithoutSpace as $director) {
+                                            $e = preg_split('/(?=[A-Z])/', $director);
+                                            $directors[$i++] = implode(" ", $e);
+                                        }
+                                    } else {
+                                        $directors = null;
+                                    }
+
+                                    $actorsWithoutSpaces = preg_replace('/\s+/', '', $d[1]);
+                                    if (strpos($actorsWithoutSpaces, "Cu") !== false) {
+                                        $actorsWithoutCu = str_replace("Cu", '', $actorsWithoutSpaces);
+                                        $actorsWithoutSpace = explode(',', $actorsWithoutCu);
+                                        $actors = [];
+                                        $i = 0;
+                                        foreach ($actorsWithoutSpace as $actor) {
+                                            $e = preg_split('/(?=[A-Z])/', $actor);
+                                            $actors[$i++] = implode(" ", $e);
+                                        }
+                                    } else {
+                                        $actors = null;
+                                    }
                                 }
+
+                                $gen = ($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->count())
+                                    ? ($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->text()) : null;
+
+                                $genWithoutSpaces = preg_replace('/\s+/', ',', $gen);
+                                $genres = explode(',', $genWithoutSpaces);
+                                $genres = array_filter($genres);
+
+                                $image = ($crawler->filter('a>img[class="img2 mb5"]')->count()) ?
+                                    ($image = $crawler->filter('a>img[class="img2 mb5"]')->image()->getUri()) : null;
+
+                                $movie->setImage($image);
+                                $movie->setYear($year);
+                                $movie->setTitle($title);
+                                $movie->setLink($l);
+                                $movie->setActors($actors);
+                                $movie->setDirectors($directors);
+                                $movie->setGenre($genres);
+                                $this->em->persist($movie);
+                                $this->em->flush();
                             }
-
-
-                            $gen = ($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->count())
-                                ?($crawler->filterXPath('//div[contains(@id, "movieGenreUserChoiceResults")]')->text()):' ';
-
-                            $genWithoutSpaces = preg_replace('/\s+/', ',', $gen);
-                            $genres = explode(',',$genWithoutSpaces);
-                            $genres = array_filter($genres);
-
-                            $movie->setYear($year);
-                            $movie->setTitle($title);
-                            $movie->setLink($l);
-                            $movie->setActors($actors);
-                            $movie->setDirectors($directors);
-                            $movie->setGenre($genres);
-                            $this->em->persist($movie);
-                            $this->em->flush();
                         }
                     }
                 }

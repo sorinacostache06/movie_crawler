@@ -85,6 +85,13 @@ class Movie
     private $ratingImdb;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", length=255, nullable=true)
+     */
+    private $image;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Site", inversedBy="movies")
      * @ORM\JoinColumn(name="site_id", referencedColumnName="id")
      */
@@ -290,6 +297,30 @@ class Movie
     public function getRatingImdb()
     {
         return $this->ratingImdb;
+    }
+
+    /**
+     * Set image
+     *
+     * @param string $image
+     *
+     * @return Movie
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 
     /**

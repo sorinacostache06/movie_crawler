@@ -20,4 +20,13 @@ class MovieRepository extends \Doctrine\ORM\EntityRepository
             ->from('AppBundle:Movie','u');
         return $qb;
     }
+
+    public function distinctMovie($qb, $link)
+    {
+        $qb->select('u')
+            ->from('AppBundle:Movie','u')
+            ->andWhere('u.link = :link')
+            ->setParameter('link',$link);
+        return $qb;
+    }
 }
