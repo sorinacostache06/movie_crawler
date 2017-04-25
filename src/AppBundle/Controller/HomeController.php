@@ -22,6 +22,11 @@ class HomeController extends Controller
         $qb = $em->createQueryBuilder();
         $movies = $repo->selectAll($qb);
         $movieManageList = $movies->getQuery()->getResult();
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $movies,
+            $request->query->getInt('page',1),20
+        );
 
         if (empty($movieManageList)) {
             $this->addFlash('notice', $this->get('translator')->trans('movie_list_empty'));
@@ -31,6 +36,7 @@ class HomeController extends Controller
             '::movie_list.html.twig',
             [
                 'movieManageList' => $movieManageList,
+                'pagination' =>$pagination
             ]
         );
     }
