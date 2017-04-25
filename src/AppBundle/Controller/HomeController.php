@@ -25,7 +25,7 @@ class HomeController extends Controller
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $movies,
-            $request->query->getInt('page',1),20
+            $request->query->getInt('page',1),5
         );
 
         if (empty($movieManageList)) {

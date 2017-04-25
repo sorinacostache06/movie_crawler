@@ -7,11 +7,14 @@
     {% endblock %}
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">{{ 'voucher_request.table.title'|trans }}</h3>
-        </div>
+            {% if pagination %}
+                <ul class="pagination pagination-sm no-margin pull-right">
+                    {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
+                </ul>
+            {% endif %}        </div>
         <div class="box-body table-responsive no-padding">
             <ul class="table table-bordered">
-                {% for movie in movieManageList %}
+                {% for movie in pagination %}
                 <li class="info-box">
                     <div class="box-title">
                         <h2>{{ movie.title }}  </h2>
