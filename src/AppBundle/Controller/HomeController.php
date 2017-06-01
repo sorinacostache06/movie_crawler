@@ -6,6 +6,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\MovieFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Crawler;
@@ -17,17 +18,47 @@ class HomeController extends Controller
 {
     public function listMoviesAction(Request $request)
     {
+        $filterForm = $this->createForm(MovieFilterType::class);
+
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Movie');
+
+        $filterForm->handleRequest($request);
+        $qb = $em->createQueryBuilder();
+
+        if ($filterForm->isSubmitted()) {
+            if ($filterForm->isValid()) {
+                $movieFilters = $request->query->get('movie_filter');
+                $mov = $repo->getMoviesByFilters($movieFilters);
+                $pages = $movieFilters['results'];
+            }else {
+                $this->addFlash('error', 'Form-ul este invalid');
+                $pages = 10;
+                $mov = $repo->selectAll($qb);
+            }
+        } else {
+            $pages = 10;
+            $mov = $repo->selectAll($qb);
+        }
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $mov,
+            $request->query->getInt('page',1),
+            $pages
+        );
+
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $mov,
+            $request->query->getInt('page',1),
+            $pages
+        );
+
         $qb = $em->createQueryBuilder();
         $movies = $repo->selectAll($qb);
         $movieManageList = $movies->getQuery()->getResult();
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $movies,
-            $request->query->getInt('page',1),5
-        );
-
         if (empty($movieManageList)) {
             $this->addFlash('notice', $this->get('translator')->trans('movie_list_empty'));
         }
@@ -35,6 +66,7 @@ class HomeController extends Controller
         return $this->render(
             '::movie_list.html.twig',
             [
+                'filterForm' => $filterForm->createView(),
                 'movieManageList' => $movieManageList,
                 'pagination' =>$pagination
             ]

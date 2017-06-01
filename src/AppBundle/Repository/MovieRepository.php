@@ -29,4 +29,54 @@ class MovieRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('link',$link);
         return $qb;
     }
+
+    public function getMovies()
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        return $qb;
+    }
+
+    public function getMoviesByFilters($filterParams)
+    {
+        $qb = $this->getMovies();
+        $qb = $this->addFilters($qb, $filterParams);
+
+        return $qb;
+    }
+
+    public function addFilters($qb, $filterParams)
+    {
+        if (!(empty($filterParams['title']))) {
+            $qb->andWhere('u.title LIKE :title')
+                ->setParameter('title', '%'.$filterParams['title'].'%');
+        }
+
+        if (!(empty($filterParams['year']))) {
+            $qb->andWhere('u.year LIKE :year')
+                ->setParameter('year', '%'.$filterParams['year'].'%');
+        }
+
+        if (!(empty($filterParams['rating']))) {
+            $qb->andWhere('u.rating LIKE :rating')
+                ->setParameter('rating', '%'.$filterParams['rating'].'%');
+        }
+
+        if (!(empty($filterParams['genre']))) {
+            $qb->andWhere('u.genre LIKE :genre')
+                ->setParameter('genre', '%'.$filterParams['genre'].'%');
+        }
+
+        if (!(empty($filterParams['actors']))) {
+            $qb->andWhere('u.actors LIKE :actors')
+                ->setParameter('actors', '%'.$filterParams['actors'].'%');
+        }
+
+        if (!(empty($filterParams['directors']))) {
+            $qb->andWhere('u.directors LIKE :directors')
+                ->setParameter('directors', '%'.$filterParams['directors'].'%');
+        }
+
+        return $qb;
+    }
 }

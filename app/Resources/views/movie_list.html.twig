@@ -6,13 +6,64 @@
         {{ parent() }}
     {% endblock %}
     <div class="box">
-        <div class="box-header with-border">
-            {% if pagination %}
-                <ul class="pagination pagination-sm no-margin pull-right">
-                    {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
-                </ul>
-            {% endif %}
-        </div>
+            {{ form_start(filterForm, { 'method' : 'get' }) }}
+            <table class="table table-bordered table-hover dataTable" role="grid">
+                <thead>
+                    <tr role="row">
+                        <td>{{ form_row(filterForm.results) }}</td>
+                    {% if pagination %}
+                        <td class="pagination pagination-sm no-margin pull-right">
+                            {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
+                        </td>
+                    {% endif %}
+                    </tr>
+                </thead>
+            </table>
+            <table class="table table-bordered table-hover dataTable" role="grid" id="movies">
+                <thead>
+                {% if not filterForm.vars.valid %}
+                <tr role="row" align="center">
+                    <td colspan="10">
+                        {{ form_errors(filterForm) }}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr role="row" align="center">
+                    <td width="15%">{{ 'management_movie.table.title'|trans }}</td>
+                    <td width="15%">{{ 'management_movie.table.year'|trans }}</td>
+                    <td width="15%">{{ 'management_movie.table.rating'|trans }}</td>
+                    <td width="15%">{{ 'management_movie.table.genre'|trans }}</td>
+                    <td width="15%">{{ 'management_movie.table.actors'|trans }}</td>
+                    <td width="15%">{{ 'management_movie.table.directors'|trans }}</td>
+                </tr>
+                <tr role="row" align="center">
+                    <td>
+                        {{ form_row(filterForm.title, {'attr': {'placeholder' : 'management_voucher.form.placeholder.title'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.year, {'attr': {'placeholder' : 'management_voucher.form.placeholder.year'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.rating, {'attr': {'placeholder' : 'management_voucher.form.placeholder.rating'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.genre, {'attr': {'placeholder' : 'management_voucher.form.placeholder.genre'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.actors, {'attr': {'placeholder' : 'management_voucher.form.placeholder.actors'}}) }}
+                    </td> <td>
+                        {{ form_row(filterForm.directors, {'attr': {'placeholder' : 'management_voucher.form.placeholder.directors'}}) }}
+                    </td>
+                    <td>
+                        <button type="submit" id="movie_filter_submit" name="submit"
+                                class="btn btn-primary btn-flat">
+                            <i class="glyphicon glyphicon-filter"></i>
+                        </button>
+                        {{ form_end(filterForm) }}
+                    </td>
+                </tr>
+                </thead>
+            </table>
         <div id="dom-target" style="display: none">
             {% set totalMovies = pagination.count %}
             <p>{{ totalMovies }}</p>
@@ -95,6 +146,7 @@
                 {% endfor %}
             </ul>
         </div>
+    </div>
     </div>
 {% endblock %}
 
