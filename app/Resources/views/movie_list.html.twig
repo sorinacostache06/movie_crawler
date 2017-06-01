@@ -11,80 +11,116 @@
                 <ul class="pagination pagination-sm no-margin pull-right">
                     {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
                 </ul>
-            {% endif %}        </div>
+            {% endif %}
+        </div>
+        <div id="dom-target" style="display: none">
+            {% set totalMovies = pagination.count %}
+            <p>{{ totalMovies }}</p>
+        </div>
         <div class="box-body table-responsive no-padding">
             <ul class="table table-bordered">
+                {% set i = 0 %}
                 {% for movie in pagination %}
-                <li class="info-box">
-                    <div class="box-title">
-                        <h2>{{ movie.title }}  </h2>
-                        <h4>({{ movie.year }})</h4>
-                    </div>
-                    <div style="display: inline-block; width: 100%">
-                        <div style="float: left">
-                            <img src={{ movie.image }}>
+                    {% set i = i + 1 %}
+                    <li class="info-box">
+                        <div class="box-title">
+                            <h2>{{ movie.title }}  </h2>
+                            <h4>({{ movie.year }})</h4>
                         </div>
-                        <div style="float: left; width: 40%">
-                            <ul class="info-box-content">
-                                <li class="list-unstyled">
-                                        {% if movie.directors is not null %}
-                                            <span class="text-bold">Regia : </span>
-                                            {% for director in movie.directors %}
-                                                {% if director != movie.directors|last %}
-                                                    {{ director }},
+                        <div style="display: inline-block; width: 100%">
+                            <div style="float: left">
+                                <img src={{ movie.image }}>
+                            </div>
+                            <div style="float: left; width: 40%">
+                                <ul class="info-box-content">
+                                    <li class="list-unstyled">
+                                            {% if movie.directors is not null %}
+                                                <span class="text-bold">Regia : </span>
+                                                {% for director in movie.directors %}
+                                                    {% if director != movie.directors|last %}
+                                                        {{ director }},
+                                                    {% else %}
+                                                        {{ director }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                    </li>
+
+                                    <li class="list-unstyled">
+                                        {% if movie.actors is not null %}
+                                            <span class="text-bold">Actori : </span>
+                                            {% for actor in movie.actors %}
+                                                {% if actor != movie.actors|last %}
+                                                    {{ actor }},
                                                 {% else %}
-                                                    {{ director }}
+                                                    {{ actor }}
                                                 {% endif %}
                                             {% endfor %}
                                         {% endif %}
-                                </li>
+                                    </li>
 
-                                <li class="list-unstyled">
-                                    {% if movie.actors is not null %}
-                                        <span class="text-bold">Actori : </span>
-                                        {% for actor in movie.actors %}
-                                            {% if actor != movie.actors|last %}
-                                                {{ actor }},
-                                            {% else %}
-                                                {{ actor }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </li>
-
-                                <li class="list-unstyled">
-                                    {% if movie.genre is not empty %}
-                                        <span class="text-bold">Gen : </span>
-                                        {% for gen in movie.genre %}
-                                            {% if gen != movie.genre|last %}
-                                                {{ gen }},
-                                            {% else %}
-                                                {{ gen }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </div>
-                        <div style="float: left; width: 40%">
-                            <div class="caption">
-                                <div class="info-box-content">
-                                    <span class="info-box-icon bg-aqua">
-                                        <i class="fa fa-star-o"></i>
-                                    </span>
+                                    <li class="list-unstyled">
+                                        {% if movie.genre is not empty %}
+                                            <span class="text-bold">Gen : </span>
+                                            {% for gen in movie.genre %}
+                                                {% if gen != movie.genre|last %}
+                                                    {{ gen }},
+                                                {% else %}
+                                                    {{ gen }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style="float: left; width: 40%">
+                                <div class="caption">
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Nota film</span>
-                                        <span class="info-box-number">{{ (movie.rating+movie.ratingImdb)/2 }}</span>
+                                        <span class="info-box-icon bg-aqua">
+                                            <i class="fa fa-star-o"></i>
+                                        </span>
+                                        <div class="info-box-content">
+                                            {% set name = "rating"  %}
+                                            {% set newId = name ~ i %}
+                                            <span id={{ newId }} class="info-box-text">Nota film</span>
+                                            <span class="info-box-number">{{ (movie.rating+movie.ratingImdb)/2 }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        <div>
+                            <div>
+                        </div>
                     </div>
-                </div>
                 </div>
                 </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var div = document.getElementById("dom-target");
+        var total = div.textContent;
+
+        var ids = []
+        str1 = "rating";
+        for (i=1; i<=total; i++) {
+            ids[i] = str1.concat(i);
+        }
+
+        for (i=1; i<=total; i++){
+            document.getElementById(ids[i]).onmouseover = function(){mouseOver1()};
+            document.getElementById(ids[i]).onmouseout = function(){mouseOut1()};
+        }
+
+        function mouseOver() {
+            document.getElementById("rating1").style.color = "red";
+        }
+
+        function mouseOut(id) {
+                document.getElementById("").style.color = "blue";
+        }
+    </script>
 {% endblock %}

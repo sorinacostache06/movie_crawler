@@ -11,3 +11,9 @@ services:
     insert_movies:
         class: AppBundle\Service\GetMoviesService
         arguments : ["@doctrine.orm.entity_manager"]
+
+    app.locale_listener:
+        class: AppBundle\EventListener\LocaleListener
+        arguments: ['%kernel.default_locale%']
+        tags:
+            - { name: kernel.event_subscriber }

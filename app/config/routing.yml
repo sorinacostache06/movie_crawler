@@ -24,3 +24,7 @@ default:
 crowler:
     path : /crowler
     defaults : { _controller: AppBundle:Home:insertMovies1}
+
+switch_locale:
+    path: /switch_locale/{locale}
+    defaults: { _controller: AppBundle:Locale:switchLanguage }
