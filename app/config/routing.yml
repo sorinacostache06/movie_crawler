@@ -28,3 +28,11 @@ crowler:
 switch_locale:
     path: /switch_locale/{locale}
     defaults: { _controller: AppBundle:Locale:switchLanguage }
+
+add_to_watch:
+    path: /home/{id}/watch
+    defaults: { _controller: AppBundle:ListToWatch:addToWatch }
+
+want_to_watch:
+    path: /want_to_watch
+    defaults : { _controller: AppBundle:ListToWatch:listToWatch}

@@ -39,7 +39,8 @@
 {% block avanzu_sidebar %}
     <ul class="sidebar-menu">
         <li class="header">{{ 'sidebar.navigation.main_navigation'|trans }}</li>
-        <li><a href="{{ path('home') }}"><i class="fa fa-pencil"></i>{{ 'sidebar.navigation.home'|trans }}</a></li>
+        <li><a href="{{ path('home') }}"><i class="fa fa-home"></i>{{ 'sidebar.navigation.home'|trans }}</a></li>
+        <li><a href="{{ path('want_to_watch') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.wanttowatch'|trans }}</a></li>
         <li><a href="{{ path('logout') }}"><i class="fa fa-cog"></i>{{ 'sidebar.logout'|trans }}</a></li>
         <li class="treeview">
             <a href="#"><i class="fa fa-language"></i>{{ 'sidebar.navigation.language'|trans }}</a>

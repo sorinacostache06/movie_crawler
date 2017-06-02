@@ -1,0 +1,35 @@
+<a href="#myModal_{{ type }}_{{ id }}"
+   role="button"
+   data-toggle="modal"
+   title="Tooltip Dummy Text">{{ button|raw }}
+</a>
+<div id="myModal_{{ type }}_{{ id }}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    {% set message = 'popup.'~type %}
+                    <p>{{ message|trans }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" formaction="{{ action }}">
+                        {{ 'popup.accept'|trans }}
+                    </button>
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+                        {{ 'popup.close'|trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            $("body").tooltip({ selector: '[modal]' });
+        });
+    </script>
+{% endblock %}

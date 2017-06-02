@@ -71,6 +71,10 @@ class User implements AdvancedUserInterface
     private $email;
 
     /**
+    *  @ORM\OneToMany(targetEntity="Favorite", mappedBy="user")
+    */
+    private $favorite;
+    /**
      * @return string
      */
     public function getEmail()
@@ -88,6 +92,7 @@ class User implements AdvancedUserInterface
 
         return $this;
     }
+
     /**
      * Get id
      *
@@ -219,5 +224,36 @@ class User implements AdvancedUserInterface
     public function getEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * Add favorite
+     *
+     * @param \AppBundle\Entity\Favorite $favorite
+     *
+     * @return User
+     */
+    public function addFavorite(\AppBundle\Entity\Favorite $favorite)
+    {
+        $this->favorite[] = $favorite;
+        return $this;
+    }
+    /**
+     * Remove favorite
+     *
+     * @param \AppBundle\Entity\Favorite $favorite
+     */
+    public function removeFavorite(\AppBundle\Entity\favorite $favorite)
+    {
+        $this->favorite->removeElement($favorite);
+    }
+    /**
+     * Get favorites
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFavorite()
+    {
+        return $this->favorite;
     }
 }

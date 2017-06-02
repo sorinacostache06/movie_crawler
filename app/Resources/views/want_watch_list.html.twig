@@ -1,0 +1,31 @@
+{% extends '::base-layout.html.twig' %}
+
+{% block page_title %}{{ 'navigation.want_to_watch.title'|trans }}{% endblock %}
+
+{% block page_content %}
+
+    {% block flashBag %}
+        {{ parent() }}
+    {% endblock %}
+<div class="box">
+    <div class="row">
+        <table class="table table-bordered table-hover dataTable" role="grid">
+            <thead>
+                {{ form_start(listMovies, { 'method' : 'get'}) }}
+                <tr>
+                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.title'|trans }}</td>
+                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.rating'|trans }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for favorite in favorites %}
+                    <tr role="row" align="center" style="padding:0">
+                         <td>{{ favorite.title }}</td>
+                         <td>{{ favorite.rating }}</td>
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

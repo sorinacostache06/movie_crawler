@@ -6,6 +6,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Favorite;
 use AppBundle\Entity\User;
 use AppBundle\Form\AccountType;
 use DateTimeZone;
@@ -47,11 +48,14 @@ class SecurityController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (strcmp($form->get('password')->getData(),$form->get('password_again')->getData()) == 0) {
+                $favorite = new Favorite();
                 $date = new \DateTime("now", new DateTimeZone('UTC'));
                 $user->setJoinDate($date);
                 $user->setEnabled(true);
+                $user->addFavorite($favorite);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
+                $em->persist($favorite);
                 $em->flush();
                 return $this->redirectToRoute('home');
             }

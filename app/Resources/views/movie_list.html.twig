@@ -1,5 +1,10 @@
 {% extends '::base-layout.html.twig' %}
 
+
+{% set form_token %}
+    {{ form_row(manageForm._token, {'id': "#id#"}) }}
+{% endset %}
+
 {% block page_title %}{{ 'navigation.management_movie.title'|trans }}{% endblock %}
 {% block page_content %}
     {% block flashBag %}
@@ -122,18 +127,31 @@
                                             {% endfor %}
                                         {% endif %}
                                     </li>
+                                    <li class="list-unstyled">
+                                        {{ form_start(manageForm, {'method' : 'post', 'attr' : {'class' : 'form-inline'}}) }}
+                                        {{ form_token|replace({'#id#':'add_to_watch__token_'~movie.id})|raw }}
+                                        <div class="btn btn-app">
+                                            {% include ':Components:popup.html.twig' with{
+                                            'button' : "<i class='fa fa-star-o'></i>",
+                                            'action' : path('add_to_watch', {'id': movie.id }),
+                                            'id' : movie.id,
+                                            'type' : 'addMovie'
+                                            }
+                                            %}
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                             <div style="float: left; width: 40%">
                                 <div class="caption">
                                     <div class="info-box-content">
-                                        <span class="info-box-icon bg-aqua">
-                                            <i class="fa fa-star-o"></i>
+                                        {% set name = "rating"  %}
+                                        {% set newId = name ~ i %}
+                                        <span class="info-box-icon bg-aqua" id={{ newId }} >
+                                            <i class="fa fa-video-camera"></i>
                                         </span>
                                         <div class="info-box-content">
-                                            {% set name = "rating"  %}
-                                            {% set newId = name ~ i %}
-                                            <span id={{ newId }} class="info-box-text">Nota film</span>
+                                            <span class="info-box-text">Nota film</span>
                                             <span class="info-box-number">{{ (movie.rating+movie.ratingImdb)/2 }}</span>
                                         </div>
                                     </div>

@@ -6,6 +6,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\AddToWatchType;
 use AppBundle\Form\MovieFilterType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class HomeController extends Controller
     public function listMoviesAction(Request $request)
     {
         $filterForm = $this->createForm(MovieFilterType::class);
+        $manageForm = $this->createForm(AddToWatchType::class);
 
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Movie');
@@ -66,6 +68,7 @@ class HomeController extends Controller
         return $this->render(
             '::movie_list.html.twig',
             [
+                'manageForm' =>$manageForm->createView(),
                 'filterForm' => $filterForm->createView(),
                 'movieManageList' => $movieManageList,
                 'pagination' =>$pagination
