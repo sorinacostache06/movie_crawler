@@ -56,8 +56,11 @@ class ListToWatchController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $repo = $em->getRepository('AppBundle:Favorite');
         $qb = $em->createQueryBuilder();
-        $favorites = $repo->selectAll($qb);
-        $favoritesManageList = $favorites->getQuery()->getResult();
+        $favoritesManageList = [];
+        if (count($this->getUser()) > 0){
+            $favorites = $repo->selectAll($qb, $this->getUser()->getId());
+            $favoritesManageList = $favorites->getQuery()->getResult();
+        }
         if (empty($favoritesManageList)) {
             $this->addFlash('notice', $this->get('translator')->trans('favorites_list_empty'));
         }

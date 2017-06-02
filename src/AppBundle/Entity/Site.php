@@ -40,7 +40,7 @@ class Site
     private $dateAdded;
 
     /**
-     * @ORM\OneToMany(targetEntity="Movie", mappedBy="voucher")
+     * @ORM\OneToMany(targetEntity="Movie", mappedBy="site")
      *
      */
     private $movies;

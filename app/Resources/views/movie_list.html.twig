@@ -133,6 +133,7 @@
                                         <div class="btn btn-app">
                                             {% include ':Components:popup.html.twig' with{
                                             'button' : "<i class='fa fa-star-o'></i>",
+                                            'color' : 'notice',
                                             'action' : path('add_to_watch', {'id': movie.id }),
                                             'id' : movie.id,
                                             'type' : 'addMovie'

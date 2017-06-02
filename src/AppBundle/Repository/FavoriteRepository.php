@@ -21,11 +21,12 @@ class FavoriteRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
-    public function selectAll($qb)
+    public function selectAll($qb, $id)
     {
         $qb->select('u')
             ->from('AppBundle:Favorite','u')
-            ->andWhere('u.title is not NULL');
+            ->andWhere('u.title is not NULL and u.user = :id')
+            ->setParameter('id',$id);
 
         return $qb;
     }
