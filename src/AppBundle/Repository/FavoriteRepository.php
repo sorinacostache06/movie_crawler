@@ -30,4 +30,13 @@ class FavoriteRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb;
     }
+
+    public function deleteFromFavorites($qb, $title)
+    {
+        $qb->select('u')
+            ->from('AppBundle:Favorite','u')
+            ->andWhere('u.title = :title')
+            ->setParameter('title',$title);
+        return $qb;
+    }
 }

@@ -1,5 +1,9 @@
 {% extends '::base-layout.html.twig' %}
 
+{% set form_token %}
+    {{ form_row(manageForm._token, {'id': "#id#"}) }}
+{% endset %}
+
 {% block page_title %}{{ 'navigation.want_to_watch.title'|trans }}{% endblock %}
 
 {% block page_content %}
@@ -7,6 +11,7 @@
     {% block flashBag %}
         {{ parent() }}
     {% endblock %}
+
 <div class="box">
     <div class="row">
         <table class="table table-bordered table-hover dataTable" role="grid">
@@ -15,6 +20,8 @@
                 <tr>
                     <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.title'|trans }}</td>
                     <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.rating'|trans }}</td>
+                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.seen'|trans }}</td>
+                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.delete'|trans }}</td>
                 </tr>
             </thead>
             <tbody>
@@ -22,10 +29,89 @@
                     <tr role="row" align="center" style="padding:0">
                          <td>{{ favorite.title }}</td>
                          <td>{{ favorite.rating }}</td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <div class="slider round"></div>
+                            </label>
+                        </td>
+                        <td>
+                            {{ form_start(manageForm, { 'method' : 'get'}) }}
+                            {{ form_token|replace({'#id#':'delete_to_watch__token_'~favorite.id})|raw }}
+                            <span style="float: none">
+                                {% include ':Components:popup.html.twig' with{
+                                'button' : "<i class='fa fa-close'></i>",
+                                'color' : 'danger',
+                                'action' : path('delete_to_watch', {'id': favorite.id }),
+                                'id' : favorite.id,
+                                'type' : 'deleteMovie'
+                                }
+                                %}
+                            </span>
+                        </td>
+                            {{ form_end(manageForm) }}
                     </tr>
                     {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {display:none;}
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
 {% endblock %}
+

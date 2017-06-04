@@ -175,7 +175,6 @@ class User implements AdvancedUserInterface
         return $this->joinDate;
     }
 
-
     public function getRoles()
     {
         return ['ROLE_ADMIN']; //TODO get roles from LDAP

@@ -34,5 +34,9 @@ add_to_watch:
     defaults: { _controller: AppBundle:ListToWatch:addToWatch }
 
 want_to_watch:
-     path: /want_to_watch
-     defaults: { _controller: AppBundle:ListToWatch:listToWatch }
+    path: /want_to_watch
+    defaults: { _controller: AppBundle:ListToWatch:listToWatch }
+
+delete_to_watch:
+    path: /{id}/delete
+    defaults: { _controller: AppBundle:ListToWatch:deleteToWatch }
