@@ -17,3 +17,8 @@ services:
         arguments: ['%kernel.default_locale%']
         tags:
             - { name: kernel.event_subscriber }
+
+    verify_access_rights:
+          class: AppBundle\Service\VerifyAccessRights
+          calls:
+              - ['setAdminRole',['%admin_role%']]

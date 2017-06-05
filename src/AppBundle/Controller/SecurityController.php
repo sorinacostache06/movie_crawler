@@ -8,6 +8,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Favorite;
 use AppBundle\Entity\User;
+use AppBundle\Form\LanguageType;
 use AppBundle\Form\AccountType;
 use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,13 +27,18 @@ class SecurityController extends Controller
     public function loginAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('user_management_list');
         }
+        $languageForm = $this->createForm(LanguageType::class);
+
+
         $this->user = new User();
         $form = $this->createForm(UserType::class, $this->user);
         $form->handleRequest($request);
 
-        return $this->render(':Admin:login.html.twig', ['form' => $form->createView()]);
+        return $this->render(':Admin:login.html.twig', ['form' => $form->createView(),
+            'languageForm' => $languageForm->createView(),
+        ]);
     }
 
     /**

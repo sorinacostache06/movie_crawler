@@ -15,9 +15,6 @@ security:
 #        in_memory:
 #            memory:
 #                users:
-#                    sorinacostache:
-#                        password: parola
-#                        roles: 'ROLE_USER'
 #                    admin:
 #                        password: parola
 #                        roles: 'ROLE_ADMIN'

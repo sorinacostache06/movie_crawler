@@ -17,7 +17,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
- * @ORM\Entity
  * @UniqueEntity("email")
  */
 class User implements AdvancedUserInterface
@@ -77,6 +76,12 @@ class User implements AdvancedUserInterface
     /**
      * @return string
      */
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    private $roles = array();
+
     public function getEmail()
     {
         return $this->email;
@@ -177,7 +182,18 @@ class User implements AdvancedUserInterface
 
     public function getRoles()
     {
-        return ['ROLE_ADMIN']; //TODO get roles from LDAP
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
+
+        // allows for chaining
+        return $this;
     }
 
     public function getSalt()

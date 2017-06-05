@@ -91,7 +91,7 @@
                                 <ul class="info-box-content">
                                     <li class="list-unstyled">
                                             {% if movie.directors is not null %}
-                                                <span class="text-bold">Regia : </span>
+                                                <span style = "font-style: italic">Regia : </span>
                                                 {% for director in movie.directors %}
                                                     {% if director != movie.directors|last %}
                                                         {{ director }},

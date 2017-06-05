@@ -1,11 +1,16 @@
 {% extends 'AvanzuAdminThemeBundle:layout:base-layout.html.twig' %}
 
-
 {% block title %}
     Movies Crawler
 {% endblock %}
 {% block flashBag %}
     {% include '::flashBag.html.twig' %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 {% endblock %}
 {% block avanzu_navbar %}
     <div class="navbar-custom-menu">
@@ -41,7 +46,9 @@
         <li class="header">{{ 'sidebar.navigation.main_navigation'|trans }}</li>
         <li><a href="{{ path('home') }}"><i class="fa fa-home"></i>{{ 'sidebar.navigation.home'|trans }}</a></li>
         <li><a href="{{ path('want_to_watch') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.wanttowatch'|trans }}</a></li>
-        <li><a href="{{ path('logout') }}"><i class="fa fa-cog"></i>{{ 'sidebar.logout'|trans }}</a></li>
+        {#<li><a href="{{ path('user_management_list') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.user_management'|trans }}</a></li>#}
+        <li class="{% if app.request.get('_route') == 'user_management_list' %}active{% endif %}">
+            <a href="{{ path('user_management_list') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.user_management'|trans }}</a> </li>        <li><a href="{{ path('logout') }}"><i class="fa fa-cog"></i>{{ 'sidebar.logout'|trans }}</a></li>
         <li class="treeview">
             <a href="#"><i class="fa fa-language"></i>{{ 'sidebar.navigation.language'|trans }}</a>
             <ul class="treeview-menu" style="display: none;">
@@ -50,4 +57,9 @@
             </ul>
         </li>
     </ul>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.42/js/bootstrap-datetimepicker.min.js"></script>
 {% endblock %}

@@ -1,0 +1,15 @@
+{# DATEPICKER #}
+{% block datepicker_widget %}
+    <input placeholder="Date" class="form-control datepicker" type="text" {% if value is not empty %}value="{{ value }}" {% endif %} {{ block('widget_attributes') }}/>
+{% endblock %}
+{# DATETIMEPICKER #}
+{% block datetimepicker_widget %}
+    {{ form_errors(form.date) }}
+    {{ form_errors(form.time) }}
+    <div class="input-group datetimepicker">
+        <span class="input-group-addon">Le</span>
+        {{ form_widget(form.date) }}
+        <span class="input-group-addon inner-addon">à</span>
+        {{ form_widget(form.time) }}
+    </div>
+{% endblock %}

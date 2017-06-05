@@ -40,3 +40,15 @@ want_to_watch:
 delete_to_watch:
     path: /{id}/delete
     defaults: { _controller: AppBundle:ListToWatch:deleteToWatch }
+
+user_management_list:
+    path: /admin/user_management
+    defaults: { _controller: AppBundle:Admin/UserManagement:list }
+
+user_management_activate:
+    path: /admin/user_management/{id}/activate
+    defaults: { _controller: AppBundle:Admin/UserManagement:activate }
+
+user_management_deactivate:
+    path: /admin/user_management/{id}/deactivate
+    defaults: { _controller: AppBundle:Admin/UserManagement:deactivate }
