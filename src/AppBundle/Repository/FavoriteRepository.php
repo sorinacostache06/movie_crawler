@@ -39,4 +39,38 @@ class FavoriteRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('title',$title);
         return $qb;
     }
+
+    public function createQuery()
+    {
+        $qb = $this->createQueryBuilder('u');
+        return $qb;
+    }
+
+    public function fetchAllFilteredQb($filterParams, $userId)
+    {
+        $qb = $this->createQuery();
+        $qb = $this->addFilters($qb, $filterParams, $userId);
+        return $qb;
+    }
+
+    public function addFilters($qb, $filterParams, $userId)
+    {
+        if (!(empty($filterParams['title']))) {
+            $qb->andWhere('u.title LIKE :title and u.user = :user')
+                ->setParameter('title', '%'.$filterParams['title'].'%')
+                ->setParameter('user', $userId);
+        }
+        if (isset($filterParams['wasWatched'])&& $filterParams['wasWatched']!='All') {
+            $qb->andWhere('u.wasWatched = :enabled')
+                ->setParameter('enabled', $filterParams['wasWatched']);
+        }
+
+        if (!(empty($filterParams['rating']))) {
+            $qb->andWhere('u.rating >= :rating and u.user = :user')
+                ->setParameter('rating', $filterParams['rating'])
+                ->setParameter('user', $userId);
+        }
+        return $qb;
+    }
+
 }

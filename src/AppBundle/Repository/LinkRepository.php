@@ -23,11 +23,19 @@ class LinkRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
-    public function selectAll($qb)
+    public function selectAll($qb, $siteId)
+    {
+        $qb->select('u')
+            ->from('AppBundle:Link','u')
+            ->andWhere('u.site = :siteId')
+            ->setParameter('siteId', $siteId);
+        return $qb;
+    }
+
+    public function selectLinks($qb)
     {
         $qb->select('u')
             ->from('AppBundle:Link','u');
         return $qb;
     }
-
 }

@@ -31,6 +31,6 @@ class GetMoviesCommand extends ContainerAwareCommand
 
         $output->writeln('This will take a few minutes');
         $insertMovies = $this->getContainer()->get('insert_movies');
-        $insertMovies->insertMovies();
+        $insertMovies->matchMovies();
     }
 }

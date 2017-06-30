@@ -21,12 +21,12 @@ class MovieRepository extends \Doctrine\ORM\EntityRepository
         return $qb;
     }
 
-    public function distinctMovie($qb, $link)
+    public function distinctMovie($qb, $title)
     {
         $qb->select('u')
             ->from('AppBundle:Movie','u')
-            ->andWhere('u.link = :link')
-            ->setParameter('link',$link);
+            ->andWhere('u.title = :title')
+            ->setParameter('title',$title);
         return $qb;
     }
 
@@ -58,8 +58,8 @@ class MovieRepository extends \Doctrine\ORM\EntityRepository
         }
 
         if (!(empty($filterParams['rating']))) {
-            $qb->andWhere('u.rating LIKE :rating')
-                ->setParameter('rating', '%'.$filterParams['rating'].'%');
+            $qb->andWhere('u.rating > :rating')
+                ->setParameter('rating', $filterParams['rating']);
         }
 
         if (!(empty($filterParams['genre']))) {

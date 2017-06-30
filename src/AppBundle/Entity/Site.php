@@ -28,9 +28,9 @@ class Site
     /**
      * @var string
      *
-     * @ORM\Column(name="link", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $link;
+    private $name;
 
     /**
      * @var \DateTime
@@ -40,10 +40,9 @@ class Site
     private $dateAdded;
 
     /**
-     * @ORM\OneToMany(targetEntity="Movie", mappedBy="site")
-     *
+     *  @ORM\OneToMany(targetEntity="Link", mappedBy="site")
      */
-    private $movies;
+    private $link;
 
     /**
      * Constructor
@@ -65,23 +64,30 @@ class Site
     }
 
     /**
-     * Set link
+     * Add link
      *
-     * @param string $link
+     * @param \AppBundle\Entity\Link $link
      *
-     * @return Site
+     * @return
      */
-    public function setLink($link)
+    public function addLink(\AppBundle\Entity\Link $link)
     {
-        $this->link = $link;
-
+        $this->link[] = $link;
         return $this;
     }
-
+    /**
+     * Remove link
+     *
+     * @param \AppBundle\Entity\Link $link
+     */
+    public function removeLink(\AppBundle\Entity\Link $link)
+    {
+        $this->link->removeElement($link);
+    }
     /**
      * Get link
      *
-     * @return string
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLink()
     {
@@ -110,6 +116,22 @@ class Site
     public function getDateAdded()
     {
         return $this->dateAdded;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }
 

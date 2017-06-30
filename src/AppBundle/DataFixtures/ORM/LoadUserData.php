@@ -9,6 +9,9 @@ use DateTimeZone;
 
 class LoadUserData implements FixtureInterface
 {
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $date = new \DateTime("now", new DateTimeZone('UTC'));

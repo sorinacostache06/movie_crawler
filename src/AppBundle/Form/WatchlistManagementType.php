@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserManagementType extends AbstractType
+class WatchlistManagementType extends AbstractType
 {
     /**
      * {@inheritdoc}

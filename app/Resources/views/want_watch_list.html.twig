@@ -2,6 +2,7 @@
 
 {% set form_token %}
     {{ form_row(manageForm._token, {'id': "#id#"}) }}
+    {{ form_row(manageForm2._token, {'id': "#id#"}) }}
 {% endset %}
 
 {% block page_title %}{{ 'navigation.want_to_watch.title'|trans }}{% endblock %}
@@ -14,26 +15,106 @@
 
 <div class="box">
     <div class="row">
+        {{ form_start(filterForm, { 'method' : 'get'}) }}
         <table class="table table-bordered table-hover dataTable" role="grid">
             <thead>
-                {{ form_start(listMovies, { 'method' : 'get'}) }}
-                <tr>
-                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.title'|trans }}</td>
-                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.rating'|trans }}</td>
-                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.seen'|trans }}</td>
-                    <td align="center" style="font-weight: bold">{{ 'wantwatch_management.table.delete'|trans }}</td>
-                </tr>
+            <tr role="row">
+                <td>{{ form_row(filterForm.results) }}</td>
+                {% if pagination %}
+                    <td class="pagination pagination-sm no-margin pull-center">
+                        {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
+                    </td>
+                {% endif %}
+            </tr>
             </thead>
-            <tbody>
-                    {% for favorite in favorites %}
+        </table>
+            <table class="table table-bordered table-hover dataTable" role="grid" id="movies">
+                <thead>
+                {% if not filterForm.vars.valid %}
+                    <tr role="row" align="center">
+                        <td colspan="6">
+                            {{ form_errors(filterForm, { 'method' : 'get', 'attr': {'class' : 'form-inline'}}) }}
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if pagination %}
+                <tr role="row" align="center" style="padding:0">
+                    <th width="10%">{{ knp_pagination_sortable(pagination, 'watch_management.table.title'|trans, 'u.title') }}</th>
+                    <th width="10%">{{ knp_pagination_sortable(pagination, 'watch_management.table.rating'|trans, 'u.rating') }}</th>
+                    <th width="10%">{{ knp_pagination_sortable(pagination, 'watch_management.table.status'|trans, 'u.status') }}</th>
+                    {#<th width="10%">{{ knp_pagination_sortable(pagination, 'watch_management.table.delete'|trans, 'u.delete') }}</th>#}
+                    <th width="10%">{{ 'watch_management.table.actions'|trans }}</th>
+                </tr>
+                {% endif %}
+                </thead>
+                <tr role="row" align="center">
+                    <td>
+                        {{ form_row(filterForm.title, {'attr': {'placeholder' : 'management_voucher.form.placeholder.title'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.rating, {'attr': {'placeholder' : 'management_voucher.form.placeholder.rating'}}) }}
+                    </td>
+                    <td>
+                        {{ form_row(filterForm.wasWatched) }}
+                    </td>
+                    <td>
+                        <button type="submit" id="want_watch_filter_submit" name="submit"
+                                class="btn btn-primary btn-flat">
+                            <i class="glyphicon glyphicon-filter"></i>
+                        </button>
+                        {{ form_end(filterForm) }}
+                    </td>
+                </tr>
+                </thead>
+            </table>
+            <div class="box-body">
+                <table class="table table-bordered">
+                    <thead>
+                    {#<tr align="center" style="font-weight: bold;">#}
+                        {#<td width="5%">{{ 'management_group.table.title'|trans }}</td>#}
+                        {#<td width="15%">{{ 'management_group.table.rating'|trans }}</td>#}
+                        {#<td width="7%">Actions</td>#}
+                    {#</tr>#}
+                    </thead>
+                    <div id="dom-target" style="display: none">
+                        {% set totalMovies = pagination.count %}
+                        <p>{{ totalMovies }}</p>
+                    </div>
+                    {% for favorite in pagination %}
                     <tr role="row" align="center" style="padding:0">
                          <td>{{ favorite.title }}</td>
                          <td>{{ favorite.rating }}</td>
+                        <td>{% if favorite.wasWatched == 1 %}
+                                <span class="label label-success" style="font-size: 12px">{{ 'Watched'|trans }}</span>
+                            {% else %}
+                                <span class="label label-danger" style="font-size: 12px">{{ 'Unwatched'|trans }}</span>
+                            {% endif %}
+                        </td>
                         <td>
-                            <label class="switch">
-                                <input type="checkbox">
-                                <div class="slider round"></div>
-                            </label>
+                            <span style="float: none">
+                                {{ form_start(manageForm2, { 'method' : 'post', 'attr' : {'class' : 'form-inline'}}) }}
+                                {{ form_token|replace({'#id#': 'want_to_watch__token_'~favorite.id})|raw }}
+                                {% if favorite.wasWatched == 0 %}
+                                    {% include ':Components:popup.html.twig' with{
+                                    'color' : 'success',
+                                    'button' : "<i class='fa fa-check'></i>",
+                                    'action' : path('want_to_watch_activate', {'id': favorite.id }),
+                                    'id' : favorite.id,
+                                    'type' : 'activateFavorite'
+                                    }
+                                    %}
+                                {% else %}
+                                    {% include ':Components:popup.html.twig' with{
+                                    'color' : 'danger',
+                                    'button' : "<i class='fa fa-close'></i>",
+                                    'action' : path('want_to_watch_deactivate', {'id': favorite.id }),
+                                    'id' : favorite.id,
+                                    'type' : 'deactivateFavorite'
+                                    }
+                                    %}
+                                {% endif %}
+                                    </span>
+                            {{ form_end(manageForm2) }}
                         </td>
                         <td>
                             {{ form_start(manageForm, { 'method' : 'get'}) }}

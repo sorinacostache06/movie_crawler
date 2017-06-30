@@ -52,3 +52,19 @@ user_management_activate:
 user_management_deactivate:
     path: /admin/user_management/{id}/deactivate
     defaults: { _controller: AppBundle:Admin/UserManagement:deactivate }
+
+movie_management_list:
+    path: /admin/movie_management
+    defaults: { _controller: AppBundle:Admin/MovieManagement:list }
+
+movie_management_edit:
+    path: /admin/movie_management/{id}/edit
+    defaults: { _controller: AppBundle:Admin/MovieManagement:edit }
+
+want_to_watch_deactivate:
+     path: /want_to_watch/{id}/deactivate
+     defaults: { _controller: AppBundle:ListToWatch:deactivate }
+
+want_to_watch_activate:
+     path: /want_to_watch/{id}/activate
+     defaults: { _controller: AppBundle:ListToWatch:activate }

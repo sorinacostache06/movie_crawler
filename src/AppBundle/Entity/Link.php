@@ -32,6 +32,11 @@ class Link
      */
     private $link;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="link")
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="id")
+     */
+    private $site;
 
     /**
      * Get id
@@ -65,6 +70,22 @@ class Link
     public function getLink()
     {
         return $this->link;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * @param mixed $site
+     */
+    public function setSite($site)
+    {
+        $this->site = $site;
     }
 }
 

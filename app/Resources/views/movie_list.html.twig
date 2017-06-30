@@ -33,14 +33,16 @@
                     </td>
                 </tr>
                 {% endif %}
-                <tr role="row" align="center">
-                    <td width="15%">{{ 'management_movie.table.title'|trans }}</td>
-                    <td width="15%">{{ 'management_movie.table.year'|trans }}</td>
-                    <td width="15%">{{ 'management_movie.table.rating'|trans }}</td>
-                    <td width="15%">{{ 'management_movie.table.genre'|trans }}</td>
-                    <td width="15%">{{ 'management_movie.table.actors'|trans }}</td>
-                    <td width="15%">{{ 'management_movie.table.directors'|trans }}</td>
-                </tr>
+                    {% if pagination %}
+                    <tr role="row" align="center" style="padding:0" class="text-bold">
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.title'|trans, 'u.title') }}</td>
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.year'|trans, 'u.year') }}</td>
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.rating'|trans, 'u.rating') }}</td>
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.genre'|trans, 'u.genre') }}</td>
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.actors'|trans, 'u.actors') }}</td>
+                        <td width="15%">{{ knp_pagination_sortable(pagination,'management_movie.table.directors'|trans, 'u.directors') }}</td>
+                    </tr>
+                    {% endif %}
                 <tr role="row" align="center">
                     <td>
                         {{ form_row(filterForm.title, {'attr': {'placeholder' : 'management_voucher.form.placeholder.title'}}) }}
@@ -91,7 +93,7 @@
                                 <ul class="info-box-content">
                                     <li class="list-unstyled">
                                             {% if movie.directors is not null %}
-                                                <span style = "font-style: italic">Regia : </span>
+                                                <span class="text-bold">{{ 'trans.Regia'|trans }} : </span>
                                                 {% for director in movie.directors %}
                                                     {% if director != movie.directors|last %}
                                                         {{ director }},
@@ -104,7 +106,7 @@
 
                                     <li class="list-unstyled">
                                         {% if movie.actors is not null %}
-                                            <span class="text-bold">Actori : </span>
+                                            <span class="text-bold">{{ 'trans.Actori'|trans }} : </span>
                                             {% for actor in movie.actors %}
                                                 {% if actor != movie.actors|last %}
                                                     {{ actor }},
@@ -117,7 +119,7 @@
 
                                     <li class="list-unstyled">
                                         {% if movie.genre is not empty %}
-                                            <span class="text-bold">Gen : </span>
+                                            <span class="text-bold">{{ 'trans.Gen'|trans }} : </span>
                                             {% for gen in movie.genre %}
                                                 {% if gen != movie.genre|last %}
                                                     {{ gen }},
@@ -153,7 +155,7 @@
                                             <i class="fa fa-video-camera"></i>
                                         </span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text">Nota film</span>
+                                            <span class="info-box-text">{{ 'trans.Nota'|trans }}</span>
                                             <span class="info-box-number">{{ (movie.rating+movie.ratingImdb)/2 }}</span>
                                         </div>
                                     </div>
@@ -197,3 +199,4 @@
         }
     </script>
 {% endblock %}
+

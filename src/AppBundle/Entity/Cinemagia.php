@@ -1,23 +1,16 @@
 <?php
-/**
- * Created by Sorina Costache.
- * User: sorina
- * Date: 18.04.2017*/
 
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Movie
+ * Cinemagia
  *
- * @ORM\Table(name="movie")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\MovieRepository")
- * @UniqueEntity("link")
+ * @ORM\Table(name="cinemagia")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CinemagiaRepository")
  */
-class Movie
+class Cinemagia
 {
     /**
      * @var int
@@ -31,7 +24,7 @@ class Movie
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255)
+     * @ORM\Column(name="title", type="string", length=255, unique=false)
      */
     private $title;
 
@@ -45,7 +38,7 @@ class Movie
     /**
      * @var string
      *
-     * @ORM\Column(name="year", type="string", nullable=true)
+     * @ORM\Column(name="year", type="string", length=255, nullable=true)
      */
     private $year;
 
@@ -80,23 +73,9 @@ class Movie
     /**
      * @var float
      *
-     * @ORM\Column(name="rating_imdb", type="float")
+     * @ORM\Column(name="ratingImdb", type="float")
      */
     private $ratingImdb;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="rating_cinemagia", type="float")
-     */
-    private $ratingCinemagia;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="rating_rotten", type="float")
-     */
-    private $ratingRotten;
 
     /**
      * @var string
@@ -106,10 +85,11 @@ class Movie
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Site", inversedBy="movies")
-     * @ORM\JoinColumn(name="site_id", referencedColumnName="id")
+     * @var bool
+     *
+     * @ORM\Column(name="was_matched", type="boolean", nullable=true)
      */
-    private $site;
+    private $wasMatched;
 
 
     /**
@@ -127,7 +107,7 @@ class Movie
      *
      * @param string $title
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setTitle($title)
     {
@@ -151,7 +131,7 @@ class Movie
      *
      * @param string $link
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setLink($link)
     {
@@ -175,7 +155,7 @@ class Movie
      *
      * @param string $year
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setYear($year)
     {
@@ -199,7 +179,7 @@ class Movie
      *
      * @param array $actors
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setActors($actors)
     {
@@ -223,7 +203,7 @@ class Movie
      *
      * @param array $directors
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setDirectors($directors)
     {
@@ -247,7 +227,7 @@ class Movie
      *
      * @param array $genre
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setGenre($genre)
     {
@@ -271,7 +251,7 @@ class Movie
      *
      * @param float $rating
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setRating($rating)
     {
@@ -279,8 +259,6 @@ class Movie
 
         return $this;
     }
-
-
 
     /**
      * Get rating
@@ -292,13 +270,36 @@ class Movie
         return $this->rating;
     }
 
+    /**
+     * Set ratingImdb
+     *
+     * @param float $ratingImdb
+     *
+     * @return Cinemagia
+     */
+    public function setRatingImdb($ratingImdb)
+    {
+        $this->ratingImdb = $ratingImdb;
+
+        return $this;
+    }
+
+    /**
+     * Get ratingImdb
+     *
+     * @return float
+     */
+    public function getRatingImdb()
+    {
+        return $this->ratingImdb;
+    }
 
     /**
      * Set image
      *
      * @param string $image
      *
-     * @return Movie
+     * @return Cinemagia
      */
     public function setImage($image)
     {
@@ -318,74 +319,19 @@ class Movie
     }
 
     /**
-     * Set site
-     *
-     * @param \AppBundle\Entity\Site $site
-     * @return $this
+     * @return bool
      */
-    public function setSite(\AppBundle\Entity\Site $site = null)
+    public function isWasMatched()
     {
-        $this->site = $site;
-
-        return $this;
+        return $this->wasMatched;
     }
 
     /**
-     * Get site
-     *
-     * @return \AppBundle\Entity\Site
+     * @param bool $wasMatched
      */
-    public function getSite()
+    public function setWasMatched($wasMatched)
     {
-        return $this->site;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRatingCinemagia()
-    {
-        return $this->ratingCinemagia;
-    }
-
-    /**
-     * @param mixed $ratingCinemagia
-     */
-    public function setRatingCinemagia($ratingCinemagia)
-    {
-        $this->ratingCinemagia = $ratingCinemagia;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRatingImdb()
-    {
-        return $this->ratingImdb;
-    }
-
-    /**
-     * @param float $ratingImdb
-     */
-    public function setRatingImdb($ratingImdb)
-    {
-        $this->ratingImdb = $ratingImdb;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRatingRotten()
-    {
-        return $this->ratingRotten;
-    }
-
-    /**
-     * @param float $ratingRotten
-     */
-    public function setRatingRotten($ratingRotten)
-    {
-        $this->ratingRotten = $ratingRotten;
+        $this->wasMatched = $wasMatched;
     }
 }
 

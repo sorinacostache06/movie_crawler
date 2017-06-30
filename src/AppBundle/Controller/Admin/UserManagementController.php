@@ -32,10 +32,7 @@ class UserManagementController extends Controller
             if ($filterForm->isValid()) {
                 $userFilters = $request->query->get('user_filter');
                 $qb = $repo->fetchAllFilteredQb($userFilters);
-//                var_dump($qb->getQuery()->getResult());
                 $pages = $userFilters['results'];
-//                die();
-
             } else {
                 $this->addFlash('error', 'Form-ul este invalid');
                 $qb = $repo->selectAllQb();
@@ -46,9 +43,6 @@ class UserManagementController extends Controller
             $pages = 10;
         }
 
-//        if (empty($userList)) {
-//            $this->addFlash('notice', $this->get('translator')->trans('user_management.list_empty'));
-//        }
             $paginator = $this->get('knp_paginator');
             $pagination = $paginator->paginate(
                 $qb,

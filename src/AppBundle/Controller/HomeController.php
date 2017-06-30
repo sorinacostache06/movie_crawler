@@ -17,6 +17,10 @@ use AppBundle\Entity\Movie;
 
 class HomeController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function listMoviesAction(Request $request)
     {
         $filterForm = $this->createForm(MovieFilterType::class);
@@ -50,13 +54,6 @@ class HomeController extends Controller
             $pages
         );
 
-
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $mov,
-            $request->query->getInt('page',1),
-            $pages
-        );
 
         $qb = $em->createQueryBuilder();
         $movies = $repo->selectAll($qb);
