@@ -1,0 +1,25 @@
+{% extends '::base-layout.html.twig' %}
+
+{% block title %}
+    {{ 'create_account.title'|trans }}
+{% endblock %}
+{% block page_content %}
+    <body class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-box-body">
+            <p class="login-box-msg"><b>{{ 'create_account.title'|trans }}</b></p>
+            {{ form_start(form) }}
+            {{ form_row(form.email, {'attr':{'placeholder':'account.form.email.placeholder'} }) }}
+            {{ form_row(form.username, {'attr':{'placeholder':'login.form.firstandlast_name.placeholder'}}) }}
+            {{ form_row(form.password, {'attr':{'placeholder':'login.form.password.placeholder'}}) }}
+            {{ form_row(form.password_again, {'attr':{'placeholder':'login.form.password.placeholder'}}) }}
+            <div class="row">
+                <div class="col-xs-6">
+                    {{ form_row(form.create, {'label':'create.form.name_button_submit', 'attr': {'class': 'btn btn-primary btn-block btn-flat'}}) }}
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    </body>
+{% endblock %}

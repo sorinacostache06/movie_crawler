@@ -1,0 +1,62 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+login:
+    path : /login
+    defaults : { _controller: AppBundle:Security:login }
+
+logout:
+    path : /logout
+
+home:
+    path : /home
+    defaults : { _controller: AppBundle:Home:listMovies}
+
+create_account:
+    path : /create_account
+    defaults : { _controller: AppBundle:Security:createAccount}
+
+default:
+    path : /
+    defaults : { _controller: AppBundle:Home:listMovies}
+
+crowler:
+    path : /crowler
+    defaults : { _controller: AppBundle:Home:insertMovies1}
+
+switch_locale:
+    path: /switch_locale/{locale}
+    defaults: { _controller: AppBundle:Locale:switchLanguage }
+
+add_to_watch:
+    path: /home/{id}/watch
+    defaults: { _controller: AppBundle:ListToWatch:addToWatch }
+
+want_to_watch:
+    path: /want_to_watch
+    defaults: { _controller: AppBundle:ListToWatch:listToWatch }
+
+delete_to_watch:
+    path: /{id}/delete
+    defaults: { _controller: AppBundle:ListToWatch:deleteToWatch }
+
+user_management_list:
+    path: /admin/user_management
+    defaults: { _controller: AppBundle:Admin/UserManagement:list }
+
+user_management_activate:
+    path: /admin/user_management/{id}/activate
+    defaults: { _controller: AppBundle:Admin/UserManagement:activate }
+
+user_management_deactivate:
+    path: /admin/user_management/{id}/deactivate
+    defaults: { _controller: AppBundle:Admin/UserManagement:deactivate }
+
+movie_management_list:
+    path: /admin/movie_management
+    defaults: { _controller: AppBundle:Admin/MovieManagement:list }
+
+movie_management_edit:
+    path: /admin/movie_management/{id}/edit
+    defaults: { _controller: AppBundle:Admin/MovieManagement:edit }

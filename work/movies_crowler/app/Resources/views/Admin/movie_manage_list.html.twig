@@ -1,0 +1,109 @@
+{% extends '::base-layout.html.twig' %}
+{% set form_token %}
+    {{ form_row(manageForm._token, {'id': "#id#"}) }}
+{% endset %}
+
+{% form_theme filterForm ':Form:fields.html.twig' %}
+{% block page_title %}{{ 'navigation.management_group.title'|trans }}{% endblock %}
+{% block page_subtitle %}{{ 'navigation.management_group.subtitle'|trans }}{% endblock %}
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2">
+            {% block flashBag %}
+                {{ parent() }}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{ 'groups.table.title'|trans }}</h3>
+                    {#<span style="float: right">#}
+                            {#<a class="btn btn-success btn-flat"#}
+                               {#href="{{ path('create_group') }}" title="Create group">#}
+                                {#{{ 'create_new_group.button_create_group'|trans }}#}
+                            {#</a>#}
+                        {#</span>#}
+                </div>
+                {{ form_start(filterForm, { 'method' : 'get' }) }}
+                <table class="table table-bordered table-hover dataTable" role="grid">
+                    <thead>
+                    <tr role="row">
+                        <td>{{ form_row(filterForm.results) }}</td>
+                        {% if pagination %}
+                            <td class="pagination pagination-sm no-margin pull-right">
+                                {{ knp_pagination_render(pagination, '::adminlte_pagination.html.twig') }}
+                            </td>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                </table>
+                <table class="table table-bordered table-hover dataTable" role="grid" id="movies">
+                    <thead>
+                    {% if not filterForm.vars.valid %}
+                        <tr role="row" align="center">
+                            <td colspan="10">
+                                {{ form_errors(filterForm) }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if pagination %}
+                    <tr role="row" align="center" style="padding:0">
+                        <th width="15%">{{ knp_pagination_sortable(pagination, 'management_movie.table.id'|trans, 'u.id') }}</th>
+                        <th width="15%">{{ knp_pagination_sortable(pagination, 'management_movie.table.title'|trans, 'u.id') }}</th>
+                        <th width="10%">{{ 'user_management.table.actions'|trans }}</th>
+                    </tr>
+                    {% endif %}
+                    <tr role="row" align="center">
+                        <td>
+                            {{ form_row(filterForm.id, {'attr': {'placeholder' : 'management_voucher.form.placeholder.id'}}) }}
+                        </td>
+                        <td>
+                            {{ form_row(filterForm.title, {'attr': {'placeholder' : 'management_voucher.form.placeholder.title'}}) }}
+                        </td>
+                        <td>
+                            <button type="submit" id="movie_management_filter_submit" name="submit"
+                                    class="btn btn-primary btn-flat">
+                                <i class="glyphicon glyphicon-filter"></i>
+                            </button>
+                            {{ form_end(filterForm) }}
+                        </td>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        {#<thead>#}
+                        {#<tr align="center" style="font-weight: bold;">#}
+                            {#<td width="5%">{{ 'management_group.table.id'|trans }}</td>#}
+                            {#<td width="15%">{{ 'management_group.table.name_group'|trans }}</td>#}
+                            {#<td width="7%">Actions</td>#}
+                        {#</tr>#}
+                        {#</thead>#}
+                        <div id="dom-target" style="display: none">
+                            {% set totalMovies = pagination.count %}
+                            <p>{{ totalMovies }}</p>
+                        </div>
+                        {% for group in pagination %}
+                            <tr role="row" align="center">
+                                <td>{{ group.id }}</td>
+                                <td>{{ group.title }}</td>
+                                <td>
+                                    <span style="float: none">
+                                    {{ form_start(manageForm, { 'method' : 'get'}) }}
+                                    {{ form_token|replace({'#id#':'movie_management__token_'~group.id})|raw }}
+                                    <a class="btn btn-primary btn-flat"
+                                       href="{{ path('movie_management_edit', {'id': group.id }) }}" title="Edit group">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

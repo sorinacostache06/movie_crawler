@@ -1,0 +1,71 @@
+{% extends 'AvanzuAdminThemeBundle:layout:base-layout.html.twig' %}
+
+{% block title %}
+    Movies Crawler
+{% endblock %}
+{% block flashBag %}
+    {% include '::flashBag.html.twig' %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+{% endblock %}
+{% block avanzu_navbar %}
+    <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+            <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="https://image.freepik.com/free-icon/question-mark_318-52837.jpg" class="user-image" alt="User Image">
+                    <span class="hidden-xs">{{ app.user.username }}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="user-header">
+                        <img src="https://image.freepik.com/free-icon/question-mark_318-52837.jpg" class="img-circle" alt="User Image">
+                        <p>
+                            {{ app.user.username}}
+                            <small>Member since {{ app.user.joinDate|date("d/m/Y") }}</small>
+                        </p>
+                    </li>
+                    <li class="user-footer">
+                        <div class="fa-align-center">
+                            <a href={{ path('logout') }}#" class="btn btn-default btn-flat">Sign out</a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+{% block avanzu_sidebar %}
+    <ul class="sidebar-menu">
+        <li class="header">{{ 'sidebar.navigation.main_navigation'|trans }}</li>
+        <li><a href="{{ path('home') }}"><i class="fa fa-home"></i>{{ 'sidebar.navigation.home'|trans }}</a></li>
+        {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('want_to_watch') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.wanttowatch'|trans }}</a></li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('movie_management_list') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.movie_managementc'|trans }}</a></li>
+            <li class="{% if app.request.get('_route') == 'user_management_list' %}active{% endif %}">
+                <a href="{{ path('user_management_list') }}"><i class="fa fa fa-file-movie-o"></i>{{ 'sidebar.navigation.user_management'|trans }}</a> </li>
+        {% endif %}
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <li><a href="{{ path('logout') }}"><i class="fa fa-cog"></i>{{ 'sidebar.logout'|trans }}</a></li>
+        {% else %}
+            <li><a href="{{ path('login') }}"><i class="fa fa-cog"></i>{{ 'sidebar.login'|trans }}</a></li>
+        {% endif %}
+        <li class="treeview">
+            <a href="#"><i class="fa fa-language"></i>{{ 'sidebar.navigation.language'|trans }}</a>
+            <ul class="treeview-menu" style="display: none;">
+                <li><a href="{{ path('switch_locale', {'locale': 'ro' }) }}"><i class="fa fa-circle-o"></i>{{ 'sidebar.navigation.language.ro'|trans }}</a></li>
+                <li><a href="{{ path('switch_locale', {'locale': 'en' }) }}"><i class="fa fa-circle-o"></i>{{ 'sidebar.navigation.language.en'|trans }}</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.42/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}

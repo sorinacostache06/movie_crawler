@@ -1,0 +1,8 @@
+{% extends '::base-layout.html.twig' %}
+{% block page_title %}Error{% endblock %}
+{% block page_subtitle %}no rights found{% endblock %}
+{% block page_content %}
+    {% block flashBag %}
+        {{ parent() }}
+    {% endblock %}
+{% endblock %}

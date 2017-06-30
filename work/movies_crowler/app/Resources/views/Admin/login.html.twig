@@ -1,0 +1,28 @@
+{% extends '::login-layout.html.twig' %}
+
+{% block title %}
+    {{ 'login.title'|trans }}
+{% endblock %}
+{% block page_content %}
+    <body class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-box-body">
+            <p class="login-box-msg"><b>{{ 'login.title'|trans }}</b></p>
+            {{ form_start(form) }}
+            {{ form_row(form.username, {'attr':{'placeholder':'login.form.firstandlast_name.placeholder'}, 'full_name': '_username'}) }}
+            {{ form_row(form.password, {'attr':{'placeholder':'login.form.password.placeholder'}, 'full_name': '_password'}) }}
+            <div class="row">
+                <div class="col-xs-6">
+                    {{ form_row(form.remember_me, {'label':'login.form.remember_me', 'full_name': '_remember_me'}) }}
+                </div>
+                <div class="col-xs-6">
+                    {{ form_row(form.login, {'label':'login.form.name_button_submit', 'attr': {'class': 'btn btn-primary btn-block btn-flat'}}) }}
+                </div>
+                <br/>
+                <a href="http://localhost:8000/create_account">{{'button.create.account'|trans}}</a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    </body>
+{% endblock %}
